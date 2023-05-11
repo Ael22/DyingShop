@@ -1,6 +1,7 @@
 # BED Recap - Module Management
 
 - Hoh Wei de
+- Jeremiah (P1121782)
 
 ## Setup
 
