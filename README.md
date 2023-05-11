@@ -1,6 +1,6 @@
 # BED Recap - Module Management
 
-- Jeremiah
+- Jeremiah (P1121782)
 
 ## Setup
 
