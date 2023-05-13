@@ -3,7 +3,7 @@ const createHttpError = require("http-errors");
 
 const adminModel = require("./models/admin");
 
-const verifyToken = require("./auth/verifyToken");
+const verifyToken = require("./auth/verifyToken").default;
 
 const app = express();
 app.use(express.json()); // to process JSON in request body
@@ -12,9 +12,7 @@ app.use("/admin/dashboard", verifyToken);
 
 app.use(express.static("public"));
 
-app.get("/test", (req, res) => {
-  return res.json({ hello: "world" });
-});
+app.get("/test", (req, res) => res.json({ hello: "world" }));
 
 // Method only for admin to use
 // need auth

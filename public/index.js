@@ -1,14 +1,12 @@
-let loginNotif = document.getElementById("login-notif");
+const loginNotif = document.getElementById("login-notif");
 
 document
   .getElementById("loginForm")
   .addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent the default form submission behavior
-    // Perform your login logic here
+    event.preventDefault();
 
-    // Example: Log the entered username and password to the console
-    var username = document.getElementById("username").value;
-    var password = document.getElementById("password").value;
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
 
     fetch("http://localhost:3000/api/admin/login", {
       method: "POST",

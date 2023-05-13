@@ -11,7 +11,6 @@ module.exports = {
     ecmaVersion: "latest",
   },
   rules: {
-    "no-console": "0",
     "prefer-arrow-callback": "off",
     "prefer-destructuring": "warn",
     "object-shorthand": "warn",
