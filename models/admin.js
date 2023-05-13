@@ -1,5 +1,5 @@
-const pool = require("../database");
 const jwt = require("jsonwebtoken");
+const pool = require("../database");
 
 const Admin = {
   async createAdmin(username, password, callback) {
@@ -35,10 +35,9 @@ const Admin = {
           { expiresIn: 86400 }
         );
         return callback(null, token);
-      } else {
-        console.log("Invalid Username or Password");
-        return callback(null, null);
       }
+      console.log("Invalid Username or Password");
+      return callback(null, null);
     } catch (err) {
       console.error("Error executing the SQL Statement: ", err);
       return callback(err, null);
