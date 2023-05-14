@@ -72,7 +72,7 @@ document
               <th scope="col" class="col-1">ID</th>
               <th scope="col" class="col-2">Name</th>
               <th scope="col" class="col-7">Description</th>
-              <th scope="col" class="col-2">probaby edit button</th>
+              <th scope="col" class="col-2 text-center">Edit Category</th>
             </tr>
           </thead>
           <tbody class="table-group-divider">
@@ -87,7 +87,11 @@ document
           <th scope="row">${id}</th>
           <td>${name}</td>
           <td>${description}</td>
-          <td>where button D:</td>
+          <td class="text-center">
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal${id}">
+            Edit
+          </button>
+          </td>
         </tr>
           `;
         });
