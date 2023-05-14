@@ -84,6 +84,24 @@ app.get("/api/category", (req, res) => {
   }
 });
 
+app.get("/api/category/:id", (req, res) => {
+  try {
+    const id = req.params.id;
+    if (id == null) {
+      res.status(400).json({ err_msg: "id cannot be empty!" });
+    }
+    categoryModel.getCategoryById(id, (err, result) => {
+      if (err) {
+        res.status(500).json({ err_msg: "Internal server error" });
+      } else {
+        res.status(200).json({ category: result[0] });
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ err_msg: "Internal server error" });
+  }
+});
+
 // TODO: need to add verifyToken middleware for post,put,delete so only verified admins can use those api
 // only for development purposes we dont implement it now
 

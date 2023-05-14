@@ -12,6 +12,19 @@ const category = {
     }
   },
 
+  async getCategoryById(id, callback) {
+    try {
+      const result = await pool.query(`SELECT * FROM categories WHERE id = ?`, [
+        id,
+      ]);
+      console.log("Query Executed");
+      return callback(null, result[0]);
+    } catch (err) {
+      console.error("Error executing the SQL Statement: ", err);
+      return callback(err, null);
+    }
+  },
+
   async createCategory(name, desc, callback) {
     try {
       const result = await pool.query(

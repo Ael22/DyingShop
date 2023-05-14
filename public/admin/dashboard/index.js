@@ -88,7 +88,7 @@ document
           <td>${name}</td>
           <td>${description}</td>
           <td class="text-center">
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal${id}">
+          <button type="button" class="btn btn-primary editCategoryBtn" data-bs-toggle="modal" data-bs-target="#editCategoryModal" id="editCategoryBtn${id}">
             Edit
           </button>
           </td>
@@ -104,11 +104,72 @@ document
       `;
         const contentDiv = document.getElementById("content-div");
         contentDiv.innerHTML = table;
+
+        const editCategoryButtons = document.getElementsByClassName(
+          "btn btn-primary editCategoryBtn"
+        );
+        for (let i = 0; i < editCategoryButtons.length; i += 1) {
+          editCategoryButtons[i].addEventListener("click", () => {
+            const categoryId = editCategoryButtons[i].id.slice("-1");
+            fetch(`http://localhost:3000/api/category/${categoryId}`)
+              .then((response) => response.json())
+              .then((data) => {
+                const category = data.category;
+                document.getElementById("editCategoryIdInput").placeholder =
+                  category.id;
+                document.getElementById("editCategoryNameInput").value =
+                  category.name;
+                document.getElementById("editCategoryDescInput").value =
+                  category.description;
+              })
+              .catch((err) => {
+                console.error("Error: ", err);
+              });
+          });
+        }
       })
       .catch((err) => {
         console.error("Error: ", err);
       });
   });
+
+document.getElementById("updateCategoryBtn").addEventListener("click", () => {
+  const editData = {
+    id: document.getElementById("editCategoryIdInput").placeholder,
+    name: document.getElementById("editCategoryNameInput").value,
+    description: document.getElementById("editCategoryDescInput").value,
+  };
+
+  fetch("http://localhost:3000/api/category", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(editData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      document.getElementById("editCategoryModal").className =
+        "modal fade hide";
+      console.log(data);
+    });
+});
+
+// const editCategoryButtons = document.getElementsByClassName(
+//   "btn btn-primary editCategoryBtn"
+// );
+// for (let i = 0; i < editCategoryButtons.length; i += 1) {
+//   editCategoryButtons[i].addEventListener("click", () => {
+//     const categoryId = editCategoryButtons[i].id.slice("-1");
+//     fetch(`http://localhost:3000/api/category/${categoryId}`)
+//       .then((response) => {
+//         response.json();
+//       })
+//       .then((data) => {
+//         console.log(data);
+//       });
+//   });
+// }
 
 document
   .getElementById("product-btn")
