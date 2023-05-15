@@ -86,7 +86,7 @@ app.get("/api/category", (req, res) => {
 
 app.get("/api/category/:id", (req, res) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
     if (id == null) {
       res.status(400).json({ err_msg: "id cannot be empty!" });
     }
@@ -108,7 +108,12 @@ app.get("/api/category/:id", (req, res) => {
 app.post("/api/category", (req, res) => {
   try {
     const { name, description } = req.body;
-    if (name == null || description == null) {
+    if (
+      name == null ||
+      description == null ||
+      name === "" ||
+      description === ""
+    ) {
       res.status(400).json({ err_msg: "name or description is missing!" });
       return;
     }
