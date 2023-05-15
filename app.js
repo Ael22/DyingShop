@@ -4,7 +4,7 @@ const createHttpError = require("http-errors");
 const adminModel = require("./models/admin");
 const categoryModel = require("./models/category");
 
-const verifyToken = require("./auth/verifyToken");
+// const verifyToken = require("./auth/verifyToken");
 
 const app = express();
 app.use(express.json()); // to process JSON in request body
