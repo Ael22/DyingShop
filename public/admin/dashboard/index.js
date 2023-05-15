@@ -19,6 +19,18 @@ function dashboardUiBtnUpdate(element) {
   }
 }
 
+const editModal = new bootstrap.Modal(
+  document.getElementById("editCategoryModal")
+);
+
+function showModal() {
+  editModal.show();
+}
+
+function hideModal() {
+  editModal.hide();
+}
+
 document
   .getElementById("logout-btn")
   .addEventListener("click", function (event) {
@@ -88,7 +100,7 @@ document
           <td>${name}</td>
           <td>${description}</td>
           <td class="text-center">
-          <button type="button" class="btn btn-primary editCategoryBtn" data-bs-toggle="modal" data-bs-target="#editCategoryModal" id="editCategoryBtn${id}">
+          <button type="button" class="btn btn-primary editCategoryBtn" id="editCategoryBtn${id}">
             Edit
           </button>
           </td>
@@ -121,6 +133,7 @@ document
                   category.name;
                 document.getElementById("editCategoryDescInput").value =
                   category.description;
+                showModal();
               })
               .catch((err) => {
                 console.error("Error: ", err);
@@ -149,8 +162,7 @@ document.getElementById("updateCategoryBtn").addEventListener("click", () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      document.getElementById("editCategoryModal").className =
-        "modal fade hide";
+      hideModal();
       console.log(data);
     });
 });
