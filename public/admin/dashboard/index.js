@@ -23,12 +23,16 @@ const editModal = new bootstrap.Modal(
   document.getElementById("editCategoryModal")
 );
 
-function showModal() {
-  editModal.show();
+const feedbackModal = new bootstrap.Modal(
+  document.getElementById("feedbackModal")
+);
+
+function showModal(modal) {
+  modal.show();
 }
 
-function hideModal() {
-  editModal.hide();
+function hideModal(modal) {
+  modal.hide();
 }
 
 document
@@ -133,7 +137,7 @@ document
                   category.name;
                 document.getElementById("editCategoryDescInput").value =
                   category.description;
-                showModal();
+                showModal(editModal);
               })
               .catch((err) => {
                 console.error("Error: ", err);
@@ -162,8 +166,10 @@ document.getElementById("updateCategoryBtn").addEventListener("click", () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      hideModal();
-      console.log(data);
+      hideModal(editModal);
+      document.getElementById("feedbackModalContent").innerText =
+        data.success_msg;
+      showModal(feedbackModal);
     });
 });
 
