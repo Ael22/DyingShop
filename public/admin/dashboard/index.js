@@ -23,6 +23,11 @@ function dashboardUiBtnUpdate(element) {
   }
 }
 
+// Modal for createing new category
+const createCategoryModal = new bootstrap.Modal(
+  document.getElementById("createCategoryModal")
+);
+
 // modal for editing category
 const editModal = new bootstrap.Modal(
   document.getElementById("editCategoryModal")
@@ -63,6 +68,7 @@ function loadCategoryPage() {
     .then((data) => {
       let categoryContent = `
       <h1 class="text-center text-bold"><strong>Category</strong></h1>
+      <button type="button" class="btn btn-primary" id="createCategoryBtn">Create New Category</button>
       <table  class="table table-striped table-bordered mt-3">
         <thead>
           <tr>
@@ -76,7 +82,7 @@ function loadCategoryPage() {
   
   
       `;
-      const categories = data.categories;
+      const { categories } = data;
       categories.forEach((category) => {
         const { id, name, description } = category;
         categoryContent += `
@@ -102,16 +108,23 @@ function loadCategoryPage() {
       const contentDiv = document.getElementById("content-div");
       contentDiv.innerHTML = table;
 
+      document
+        .getElementById("createCategoryBtn")
+        .addEventListener("click", () => {
+          document.getElementById("createCategoryNameInput").value = "";
+          document.getElementById("createCategoryDescInput").value = "";
+          showModal(createCategoryModal);
+        });
       const editCategoryButtons = document.getElementsByClassName(
         "btn btn-primary editCategoryBtn"
       );
       for (let i = 0; i < editCategoryButtons.length; i += 1) {
         editCategoryButtons[i].addEventListener("click", () => {
-          const categoryId = editCategoryButtons[i].id.slice("-1");
+          const categoryId = editCategoryButtons[i].id.replace(/[^\d.]/g, "");
           fetch(`http://localhost:3000/api/category/${categoryId}`)
             .then((response) => response.json())
             .then((data) => {
-              const category = data.category;
+              const { category } = data;
               document.getElementById("editCategoryIdInput").placeholder =
                 category.id;
               document.getElementById("editCategoryNameInput").value =
@@ -178,6 +191,35 @@ document
     loadCategoryPage();
   });
 
+document.getElementById("createCategoryBtn").addEventListener("click", () => {
+  const categoryData = {
+    name: document.getElementById("createCategoryNameInput").value,
+    description: document.getElementById("createCategoryDescInput").value,
+  };
+
+  fetch("/api/category", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(categoryData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      hideModal(createCategoryModal);
+      if (data.success_msg) {
+        document.getElementById("feedbackModalContent").innerText =
+          data.success_msg;
+      } else {
+        document.getElementById("feedbackModalContent").innerText =
+          data.err_msg;
+      }
+      showModal(feedbackModal);
+      loadCategoryPage();
+    });
+});
+
 // event listener for when the edit category modal's save changes button is clicked
 document.getElementById("updateCategoryBtn").addEventListener("click", () => {
   const editData = {
@@ -229,7 +271,7 @@ document
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id: id }),
+      body: JSON.stringify({ id }),
     })
       .then((response) => {
         hideModal(deleteModal);

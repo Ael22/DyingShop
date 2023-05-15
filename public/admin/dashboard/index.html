@@ -100,18 +100,85 @@
       <div class="container p-5 col-10 vh-200" id="content-div"></div>
     </div>
 
-    <!-- Modal form for editing categories -->
+    <!-- Modal form for createing new categories -->
     <div
       class="modal fade"
-      id="editCategoryModal"
+      id="createCategoryModal"
       tabindex="-1"
-      aria-labelledby="categoryModalLabel"
+      aria-labelledby="createCategoryModalLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="categoryModalLabel">
+            <h1 class="modal-title fs-5" id="createCategoryModalLabel">
+              Creating new Category
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="createCategoryNameInput" class="form-label"
+                  >Category Name</label
+                >
+                <input
+                  type="input"
+                  class="form-control"
+                  id="createCategoryNameInput"
+                  value=""
+                />
+              </div>
+              <div class="mb-3">
+                <label for="createCategoryDescInput" class="form-label"
+                  >Category Description</label
+                >
+                <textarea
+                  style="resize: none"
+                  class="form-control"
+                  id="createCategoryDescInput"
+                  rows="3"
+                ></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="createCategoryBtn"
+            >
+              Create Category
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal form for editing categories -->
+    <div
+      class="modal fade"
+      id="editCategoryModal"
+      tabindex="-1"
+      aria-labelledby="editCategoryModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="editCategoryModalLabel">
               Editing Category
             </h1>
             <button
@@ -261,9 +328,6 @@
       </div>
     </div>
 
-    <!-- <h1>Admin dashboard page is really empty</h1>
-    <h2>TODO: side panel for dashboard</h2>
-    <h2>make href links acutally work</h2> -->
     <script
       defer
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
