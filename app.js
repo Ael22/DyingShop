@@ -129,7 +129,13 @@ app.post("/api/category", (req, res) => {
 app.put("/api/category", (req, res) => {
   try {
     const { id, name, description } = req.body;
-    if (id == null || description == null || name == null) {
+    if (
+      id == null ||
+      description == null ||
+      name == null ||
+      description === "" ||
+      name === ""
+    ) {
       res.status(400).json({ err_msg: "id, name or description is missing!" });
       return;
     }
