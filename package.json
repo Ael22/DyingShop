@@ -2,7 +2,10 @@
     "dependencies": {
         "dotenv": "^16.0.3",
         "express": "^4.18.1",
+        "fix-esm": "^1.0.1",
         "http-errors": "^2.0.0",
+        "is-decimal": "^2.0.1",
+        "is-integer": "^1.0.7",
         "jsonwebtoken": "^9.0.0",
         "mysql2": "^2.3.3"
     },

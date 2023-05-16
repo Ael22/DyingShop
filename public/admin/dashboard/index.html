@@ -100,7 +100,7 @@
       <div class="container p-5 col-10 vh-200" id="content-div"></div>
     </div>
 
-    <!-- Modal form for createing new categories -->
+    <!-- Modal form for creating new categories -->
     <div
       class="modal fade"
       id="createCategoryModal"
@@ -158,7 +158,7 @@
             <button
               type="button"
               class="btn btn-primary"
-              id="createCategoryBtn"
+              id="createCategoryFormBtn"
             >
               Create Category
             </button>
@@ -285,6 +285,217 @@
               id="confirmConfirmDeleteBtn"
             >
               Yes, I'm sure
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal form for creating products -->
+    <div
+      class="modal fade"
+      id="createProductModal"
+      tabindex="-1"
+      aria-labelledby="createProductModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="createProductModalLabel">
+              creating Product
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="createCategoryNameInput" class="form-label"
+                  >Product Name</label
+                >
+                <input
+                  type="input"
+                  class="form-control"
+                  id="createProductNameInput"
+                  value=""
+                />
+              </div>
+              <div class="mb-3">
+                <label for="createProductPriceInput">Price</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="createProductPriceInput"
+                  />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="createProductStockInput" class="form-label"
+                  >Stock Quantity</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="createProductStockInput"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="createProductStockInput" class="form-label"
+                  >Category</label
+                >
+                <select
+                  class="form-select"
+                  aria-label="Default select example"
+                  id="createProductCategorySelectMenu"
+                ></select>
+              </div>
+
+              <div class="mb-3">
+                <label for="createCategoryDescInput" class="form-label"
+                  >Product Description</label
+                >
+                <textarea
+                  style="resize: none"
+                  class="form-control"
+                  id="createProductDescInput"
+                  rows="3"
+                ></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="createProductFormBtn"
+            >
+              Create Product
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal form for editing products -->
+    <div
+      class="modal fade"
+      id="editProductModal"
+      tabindex="-1"
+      aria-labelledby="editProductModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="editProductModalLabel">
+              Editing Product
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="editCategoryIdInput" class="form-label"
+                  >Product Id</label
+                >
+                <input
+                  type="input"
+                  class="form-control"
+                  id="editProductIdInput"
+                  placeholder=""
+                  disabled
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editCategoryNameInput" class="form-label"
+                  >Product Name</label
+                >
+                <input
+                  type="input"
+                  class="form-control"
+                  id="editProductNameInput"
+                  value=""
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editProductPriceInput">Price</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="editProductPriceInput"
+                  />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="editProductStockInput" class="form-label"
+                  >Stock Quantity</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="editProductStockInput"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editProductStockInput" class="form-label"
+                  >Category</label
+                >
+                <select
+                  class="form-select"
+                  aria-label="Default select example"
+                  id="editProductCatgorySelectMenu"
+                ></select>
+              </div>
+
+              <div class="mb-3">
+                <label for="editCategoryDescInput" class="form-label"
+                  >Product Description</label
+                >
+                <textarea
+                  style="resize: none"
+                  class="form-control"
+                  id="editProductDescInput"
+                  rows="3"
+                ></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-danger" id="deleteProductBtn">
+              Delete
+            </button>
+            <button type="button" class="btn btn-primary" id="updateProductBtn">
+              Save changes
             </button>
           </div>
         </div>
