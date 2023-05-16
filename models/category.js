@@ -1,11 +1,11 @@
 const pool = require("../database");
 
 const category = {
-  async getAllCategories(callback) {
+  async getAllCategories() {
     try {
       const result = await pool.query(`SELECT * FROM categories`, []);
       console.log("Query Executed");
-      return callback(null, result[0]);
+      return result[0];
     } catch (err) {
       console.error("Error executing the SQL Statement: ", err);
       return callback(err, null);
@@ -21,51 +21,57 @@ const category = {
       return result[0];
     } catch (err) {
       console.error("Error executing the SQL Statement: ", err);
-      return err;
+      throw err;
     }
   },
 
-  async createCategory(name, desc, callback) {
+  async createCategory(name, desc) {
     try {
       const result = await pool.query(
         `INSERT INTO categories (name, description) VALUES (?, ?)`,
         [name, desc]
       );
-      console.log(
-        "Data Insertion Success! Affected Rows: ",
-        result[0].affectedRows
-      );
-      return callback(null, result[0]);
+      console.log("Data Insertion Success!");
+      if (result[0].affectedRows < 1) {
+        return false;
+      }
+      return true;
     } catch (err) {
       console.error("Error executing the SQL Statement: ", err);
-      return callback(err, null);
+      throw err;
     }
   },
 
-  async updateCategory(id, name, desc, callback) {
+  async updateCategory(id, name, desc) {
     try {
       const result = await pool.query(
         `UPDATE categories SET name = ?, description = ? WHERE id = ?`,
         [name, desc, id]
       );
       console.log("Query Executed!");
-      return callback(null, result[0]);
+      if (result[0].affectedRows < 1) {
+        return false;
+      }
+      return true;
     } catch (err) {
       console.error("Error executing the SQL Statement: ", err);
-      return callback(err, null);
+      throw err;
     }
   },
 
-  async deleteCategory(id, callback) {
+  async deleteCategory(id) {
     try {
       const result = await pool.query(`DELETE FROM categories WHERE id = ?`, [
         id,
       ]);
       console.log("Query Executed");
-      return callback(null, result[0]);
+      if (result[0].affectedRows < 1) {
+        return false;
+      }
+      return true;
     } catch (err) {
       console.error("Error executing the SQL Statement: ", err);
-      return callback(err, null);
+      throw err;
     }
   },
 };
