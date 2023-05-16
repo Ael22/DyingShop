@@ -40,6 +40,7 @@ function renderProductFormCategoryMenu(selectMenuId) {
 }
 
 renderProductFormCategoryMenu("editProductCatgorySelectMenu");
+renderProductFormCategoryMenu("createProductCategorySelectMenu");
 
 // Modal for createing new category
 const createCategoryModal = new bootstrap.Modal(
@@ -59,6 +60,10 @@ const feedbackModal = new bootstrap.Modal(
 // modal for modal deletion
 const deleteModal = new bootstrap.Modal(
   document.getElementById("confirmDeleteModal")
+);
+
+const createProductModal = new bootstrap.Modal(
+  document.getElementById("createProductModal")
 );
 
 const editProductModal = new bootstrap.Modal(
@@ -178,7 +183,7 @@ function loadCategoryPage() {
     });
 }
 
-function loadCategoryCreateForm() {
+function submitCategoryCreateForm() {
   const categoryData = {
     name: document.getElementById("createCategoryNameInput").value,
     description: document.getElementById("createCategoryDescInput").value,
@@ -236,31 +241,19 @@ function submitCategoryUpdateForm() {
     });
 }
 
-function loadConfirmDeleteCategoryAlert() {
-  const id = document.getElementById("editCategoryIdInput").placeholder;
-  fetch("/api/category", {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ id }),
-  })
-    .then((response) => {
-      hideModal(deleteModal);
-      if (response.ok) {
-        document.getElementById("feedbackModalContent").innerText =
-          "Deletion Success";
-        showModal(feedbackModal);
-      } else {
-        document.getElementById("feedbackModalContent").innerText =
-          "Deletion Failed";
-        showModal(feedbackModal);
-      }
-      loadCategoryPage();
-    })
-    .catch((err) => {
-      console.log("Error: ", err);
-    });
+function clearEditCategoryForm() {
+  document.getElementById("editCategoryIdInput").placeholder = "";
+  document.getElementById("editCategoryNameInput").value = "";
+  document.getElementById("editCategoryDescInput").value = "";
+}
+
+function clearEditProductForm() {
+  document.getElementById("editProductIdInput").placeholder = "";
+  document.getElementById("editProductNameInput").value = "";
+  document.getElementById("editProductPriceInput").value = "";
+  document.getElementById("editProductStockInput").value = "";
+  document.getElementById("editProductCatgorySelectMenu").value = "";
+  document.getElementById("editProductDescInput").value = "";
 }
 
 function loadProductPage() {
@@ -328,6 +321,12 @@ function loadProductPage() {
       const contentDiv = document.getElementById("content-div");
       contentDiv.innerHTML = table;
 
+      document
+        .getElementById("createProductBtn")
+        .addEventListener("click", () => {
+          showModal(createProductModal);
+        });
+
       const editProductButtons = document.getElementsByClassName(
         "btn btn-primary editProductBtn"
       );
@@ -359,6 +358,39 @@ function loadProductPage() {
     })
     .catch((err) => {
       console.error("Error: ", err);
+    });
+}
+
+function submitProductCreateForm() {
+  const productData = {
+    name: document.getElementById("createProductNameInput").value,
+    description: document.getElementById("createProductDescInput").value,
+    price: document.getElementById("createProductPriceInput").value,
+    stockQty: document.getElementById("createProductStockInput").value,
+    categoryId: document.getElementById("createProductCategorySelectMenu")
+      .value,
+  };
+
+  fetch("/api/product", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(productData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      hideModal(createProductModal);
+      if (data.success_msg) {
+        document.getElementById("feedbackModalContent").innerText =
+          data.success_msg;
+      } else {
+        document.getElementById("feedbackModalContent").innerText =
+          data.err_msg;
+      }
+      showModal(feedbackModal);
+      loadProductPage();
     });
 }
 
@@ -398,6 +430,60 @@ function submitProductUpdateForm() {
       showModal(feedbackModal);
       loadProductPage();
     });
+}
+
+function loadConfirmDeleteCategoryAlert() {
+  const categoryId = document.getElementById("editCategoryIdInput").placeholder;
+  const productId = document.getElementById("editProductIdInput").placeholder;
+  if (!productId) {
+    fetch("/api/category", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: categoryId }),
+    })
+      .then((response) => {
+        hideModal(deleteModal);
+        if (response.ok) {
+          document.getElementById("feedbackModalContent").innerText =
+            "Deletion Success";
+          showModal(feedbackModal);
+        } else {
+          document.getElementById("feedbackModalContent").innerText =
+            "Deletion Failed";
+          showModal(feedbackModal);
+        }
+        loadCategoryPage();
+      })
+      .catch((err) => {
+        console.log("Error: ", err);
+      });
+  } else if (!categoryId) {
+    fetch("/api/product", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: productId }),
+    })
+      .then((response) => {
+        hideModal(deleteModal);
+        if (response.ok) {
+          document.getElementById("feedbackModalContent").innerText =
+            "Deletion Success";
+          showModal(feedbackModal);
+        } else {
+          document.getElementById("feedbackModalContent").innerText =
+            "Deletion Failed";
+          showModal(feedbackModal);
+        }
+        loadProductPage();
+      })
+      .catch((err) => {
+        console.log("Error: ", err);
+      });
+  }
 }
 
 // logout button event listener for user to logout properly
@@ -443,14 +529,17 @@ document
   .addEventListener("click", function (event) {
     event.preventDefault();
 
+    clearEditProductForm();
     dashboardUiBtnUpdate(document.getElementById("category-btn"));
     loadCategoryPage();
   });
 
 // event listener for when the admin dashboard's create category button is clicked
-document.getElementById("createCategoryBtn").addEventListener("click", () => {
-  loadCategoryCreateForm();
-});
+document
+  .getElementById("createCategoryFormBtn")
+  .addEventListener("click", () => {
+    submitCategoryCreateForm();
+  });
 
 // event listener for when the edit category modal's save changes button is clicked
 document.getElementById("updateCategoryBtn").addEventListener("click", () => {
@@ -480,6 +569,7 @@ document
   .addEventListener("click", function (event) {
     event.preventDefault();
 
+    clearEditCategoryForm();
     dashboardUiBtnUpdate(document.getElementById("product-btn"));
     loadProductPage();
   });
@@ -487,3 +577,18 @@ document
 document.getElementById("updateProductBtn").addEventListener("click", () => {
   submitProductUpdateForm();
 });
+
+document.getElementById("deleteProductBtn").addEventListener("click", () => {
+  hideModal(editProductModal);
+  const id = document.getElementById("editProductIdInput").placeholder;
+  document.getElementById(
+    "confirmDeleteModalContent"
+  ).innerHTML = `You are <strong>DELETING Product</strong> with <strong>ID ${id}</strong>`;
+  showModal(deleteModal);
+});
+
+document
+  .getElementById("createProductFormBtn")
+  .addEventListener("click", () => {
+    submitProductCreateForm();
+  });

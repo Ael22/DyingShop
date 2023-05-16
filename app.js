@@ -228,20 +228,8 @@ app.get("/api/product/:id", (req, res) => {
 
 app.post("/api/product", (req, res) => {
   const { name, description, price, stockQty, categoryId } = req.body;
-  if (
-    name == null ||
-    description == null ||
-    price == null ||
-    stockQty == null ||
-    categoryId == null ||
-    name === "" ||
-    description === "" ||
-    price === "" ||
-    stockQty === "" ||
-    categoryId === "" ||
-    isInteger(parseInt(stockQty, 10)) === false ||
-    isDecimal(parseFloat(price))
-  ) {
+  if (!name || !description || !price || !stockQty || !categoryId) {
+    console.log(req.body);
     res.status(400).json({
       err_msg:
         "name, description, price, stock quantity or catogory id is missing or incorrect!",
@@ -279,22 +267,7 @@ app.post("/api/product", (req, res) => {
 
 app.put("/api/product", async (req, res) => {
   const { id, name, description, price, stockQty, categoryId } = req.body;
-  if (
-    name == null ||
-    description == null ||
-    price == null ||
-    stockQty == null ||
-    categoryId == null ||
-    name === "" ||
-    description === "" ||
-    price === "" ||
-    stockQty === "" ||
-    categoryId === "" ||
-    isInteger(parseInt(stockQty, 10)) === false ||
-    isDecimal(parseFloat(price)) ||
-    id == null ||
-    id === ""
-  ) {
+  if (!id || !name || !description || !price || !stockQty || !categoryId) {
     res.status(400).json({
       err_msg:
         "id, name, description, price, stock quantity or catogory id is missing or incorrect!",
