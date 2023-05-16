@@ -12,12 +12,12 @@ const product = {
     }
   },
 
-  async getAllProductById(id) {
+  async getProductById(id) {
     try {
       const result = await pool.query(`SELECT * FROM products WHERE id = ?`, [
         id,
       ]);
-      console.log("Query executed: ");
+      console.log("Query executed ");
       return result[0];
     } catch (err) {
       console.error("Error executing the SQL Statement: ", err);

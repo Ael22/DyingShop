@@ -205,6 +205,25 @@ app.get("/api/product", (req, res) => {
     });
 });
 
+app.get("/api/product/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!isInteger(parseInt(id, 10))) {
+      res.status(400).json({ err_msg: "id is invalid" });
+      return;
+    }
+    productModel.getProductById(id).then((result) => {
+      if (result.length < 1) {
+        res.status(404).json({ err_msg: "Product not found" });
+        return;
+      }
+      res.status(200).json({ product: result[0] });
+    });
+  } catch (err) {
+    res.status(500).json({ err_msg: "Internal server error" });
+  }
+});
+
 // TODO: authenticate POST/PUT/DELETE of products
 
 app.post("/api/product", (req, res) => {
@@ -258,8 +277,7 @@ app.post("/api/product", (req, res) => {
     });
 });
 
-// TODO: concurrent request for finding category id and product id and complete this whole thing
-app.put("/api/product", (req, res) => {
+app.put("/api/product", async (req, res) => {
   const { id, name, description, price, stockQty, categoryId } = req.body;
   if (
     name == null ||
@@ -283,26 +301,32 @@ app.put("/api/product", (req, res) => {
     });
     return;
   }
+  const results = await Promise.all([
+    productModel.getProductById(id),
+    categoryModel.getCategoryById(categoryId),
+  ]);
 
-  categoryModel
-    .getCategoryById(categoryId)
+  if (results[0].length < 1) {
+    res.status(400).json({ err_msg: `Product Id does not exist!` });
+    return;
+  }
+  if (results[1].length < 1) {
+    res.status(400).json({ err_msg: `Category Id does not exist!` });
+    return;
+  }
+
+  productModel
+    .updateProduct(id, name, description, price, stockQty, categoryId)
     .then((data) => {
-      if (data.length < 1) {
-        throw new Error(`Category Id ${categoryId} does not exist`);
+      if (data.affectedRows < 1) {
+        res.status(500).json({ err_msg: "Internal server error" });
       } else {
-        productModel
-          .updateProduct(id, name, description, price, stockQty, categoryId)
-          .then((result) => {
-            res.status(200).json({ result });
-          })
-          .catch((err) => {
-            console.error("Error :", err);
-            res.status(500).json({ err_msg: "Internal server error" });
-          });
+        res.status(200).json({ success_msg: "Product successfully updated" });
       }
     })
     .catch((err) => {
-      res.status(400).json({ err_msg: err.message });
+      console.error("Error: ", err);
+      res.status(500).json({ err_msg: "Internal server error" });
     });
 });
 
@@ -318,7 +342,7 @@ app.delete("/api/product", (req, res) => {
       if (result.affectedRows < 1) {
         res
           .status(400)
-          .json({ err_msg: ` Failed to Delete product with ID ${id}` });
+          .json({ err_msg: `Failed to Delete product with ID ${id}` });
         return;
       }
       res.status(200).json({ success_msg: "Product successfully deleted" });
