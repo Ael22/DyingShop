@@ -1,7 +1,6 @@
 const express = require("express");
 const createHttpError = require("http-errors");
 const isInteger = require("is-integer");
-const { isDecimal } = require("fix-esm").require("is-decimal");
 
 const adminModel = require("./models/admin");
 const categoryModel = require("./models/category");
