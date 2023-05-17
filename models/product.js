@@ -31,7 +31,10 @@ const product = {
         `INSERT INTO products (name, description, price, stock_qty, category_id) VALUES (?, ?, ?, ?, ?)`,
         [name, description, price, stockQty, categoryId]
       );
-      return result[0];
+      if (result[0].affectedRows < 1) {
+        return false;
+      }
+      return true;
     } catch (err) {
       console.error("Error executing the SQL Statement: ", err);
       throw err;
@@ -44,7 +47,10 @@ const product = {
         `UPDATE products SET name = ?, description = ?, price = ?, stock_qty = ?, category_id = ? WHERE id = ?`,
         [name, description, price, stockQty, categoryId, id]
       );
-      return result[0];
+      if (result[0].affectedRows < 1) {
+        return false;
+      }
+      return true;
     } catch (err) {
       console.error("Error executing the SQL Statement: ", err);
       throw err;
@@ -57,7 +63,10 @@ const product = {
         id,
       ]);
       console.log("Query Executed");
-      return result[0];
+      if (result[0].affectedRows < 1) {
+        return false;
+      }
+      return true;
     } catch (err) {
       console.error("Error executing the SQL Statement: ", err);
       throw err;

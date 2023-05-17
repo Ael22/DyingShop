@@ -72,12 +72,18 @@ app.post("/api/admin/logout", (req, res) => {
   }
 });
 
+// TODO: Update this to use promises
 app.get("/api/category", (req, res) => {
   try {
-    categoryModel.getAllCategories((err, result) => {
-      if (err) {
-        res.status(500).json({ err_msg: "Internal server error" });
-      } else {
+    // categoryModel.getAllCategories((err, result) => {
+    //   if (err) {
+    //     res.status(500).json({ err_msg: "Internal server error" });
+    //   } else {
+    //     res.status(200).json({ categories: result });
+    //   }
+    // });
+    categoryModel.getAllCategories().then((result) => {
+      if (result) {
         res.status(200).json({ categories: result });
       }
     });
@@ -89,8 +95,8 @@ app.get("/api/category", (req, res) => {
 app.get("/api/category/:id", (req, res) => {
   try {
     const { id } = req.params;
-    if (!isInteger(parseInt(id, 10))) {
-      res.status(400).json({ err_msg: "id cannot be empty!" });
+    if (!isInteger(id)) {
+      res.status(400).json({ err_msg: "id is invalid!" });
       return;
     }
     categoryModel
@@ -117,22 +123,15 @@ app.get("/api/category/:id", (req, res) => {
 app.post("/api/category", (req, res) => {
   try {
     const { name, description } = req.body;
-    if (
-      name == null ||
-      description == null ||
-      name === "" ||
-      description === ""
-    ) {
+    if (!name || !description) {
       res.status(400).json({ err_msg: "name or description is missing!" });
       return;
     }
-    categoryModel.createCategory(name, description, (err, result) => {
-      if (err) {
-        res.status(500).json({ err_msg: "Internal server error" });
-      } else if (result.affectedRows > 0) {
-        res.status(201).json({
-          success_msg: `Category with ID ${result.insertId} created`,
-        });
+    categoryModel.createCategory(name, description).then((result) => {
+      if (!result) {
+        res.status(500).json({ err_msg: "Failed to create category" });
+      } else {
+        res.status(201).json({ success_msg: `New category created` });
       }
     });
   } catch (err) {
@@ -143,23 +142,15 @@ app.post("/api/category", (req, res) => {
 app.put("/api/category", (req, res) => {
   try {
     const { id, name, description } = req.body;
-    if (
-      id == null ||
-      description == null ||
-      name == null ||
-      description === "" ||
-      name === ""
-    ) {
+    if (!id || !name || !description) {
       res.status(400).json({ err_msg: "id, name or description is missing!" });
       return;
     }
-    categoryModel.updateCategory(id, name, description, (err, result) => {
-      if (err) {
-        res.status(500).json({ err_msg: "Internal server error" });
-      } else if (result.affectedRows < 1) {
+    categoryModel.updateCategory(id, name, description).then((result) => {
+      if (!result) {
         res
           .status(400)
-          .json({ err_msg: `Failed to Update Category with ID ${id}` });
+          .json({ err_msg: `Failed to update category with ID ${id}` });
       } else {
         res.status(200).json({
           success_msg: `Successful Category Update`,
@@ -174,17 +165,15 @@ app.put("/api/category", (req, res) => {
 app.delete("/api/category", (req, res) => {
   try {
     const { id } = req.body;
-    categoryModel.deleteCategory(id, (err, result) => {
-      if (err) {
-        res.status(500).json({ err_msg: "Internal server error" });
-      } else if (result.affectedRows < 1) {
-        res
-          .status(400)
-          .json({ err_msg: ` Failed to Delete Category with ID ${id}` });
+    if (!id) {
+      res.status(400).json({ err_msg: "id is missing!" });
+      return;
+    }
+    categoryModel.deleteCategory(id).then((result) => {
+      if (!result) {
+        res.status(500).json({ err_msg: "Failed to delete category" });
       } else {
-        res.status(200).json({
-          success_msg: `Successful Category Deletion`,
-        });
+        res.status(200).json({ success_msg: "Category successfully deleted" });
       }
     });
   } catch (err) {
@@ -207,7 +196,7 @@ app.get("/api/product", (req, res) => {
 app.get("/api/product/:id", (req, res) => {
   try {
     const { id } = req.params;
-    if (!isInteger(parseInt(id, 10))) {
+    if (!id || !isInteger(id)) {
       res.status(400).json({ err_msg: "id is invalid" });
       return;
     }
@@ -225,10 +214,19 @@ app.get("/api/product/:id", (req, res) => {
 
 // TODO: authenticate POST/PUT/DELETE of products
 
+// TODO: validate decimals
 app.post("/api/product", (req, res) => {
   const { name, description, price, stockQty, categoryId } = req.body;
-  if (!name || !description || !price || !stockQty || !categoryId) {
-    console.log(req.body);
+  if (
+    !name ||
+    !description ||
+    !price ||
+    !stockQty ||
+    !categoryId ||
+    !isInteger(stockQty) ||
+    !isInteger(categoryId) ||
+    !price
+  ) {
     res.status(400).json({
       err_msg:
         "name, description, price, stock quantity or catogory id is missing or incorrect!",
@@ -238,14 +236,14 @@ app.post("/api/product", (req, res) => {
 
   categoryModel
     .getCategoryById(categoryId)
-    .then((data) => {
-      if (data.length < 1) {
+    .then((result) => {
+      if (result.length < 1) {
         throw new Error(`Category Id ${categoryId} does not exist`);
       } else {
         productModel
           .createNewProduct(name, description, price, stockQty, categoryId)
-          .then((result) => {
-            if (result.affectedRows < 1) {
+          .then((result1) => {
+            if (!result1) {
               res.status(400).json({ err_msg: "Failed to create product" });
             } else {
               res
@@ -264,9 +262,20 @@ app.post("/api/product", (req, res) => {
     });
 });
 
+// TODO: validate decimals
 app.put("/api/product", async (req, res) => {
   const { id, name, description, price, stockQty, categoryId } = req.body;
-  if (!id || !name || !description || !price || !stockQty || !categoryId) {
+  if (
+    !id ||
+    !name ||
+    !description ||
+    !price ||
+    !stockQty ||
+    !categoryId ||
+    !isInteger(id) ||
+    !isInteger(stockQty) ||
+    !isInteger(categoryId)
+  ) {
     res.status(400).json({
       err_msg:
         "id, name, description, price, stock quantity or catogory id is missing or incorrect!",
@@ -290,8 +299,10 @@ app.put("/api/product", async (req, res) => {
   productModel
     .updateProduct(id, name, description, price, stockQty, categoryId)
     .then((data) => {
-      if (data.affectedRows < 1) {
-        res.status(500).json({ err_msg: "Internal server error" });
+      if (!data) {
+        res
+          .status(500)
+          .json({ err_msg: `Failed to update product with ID ${id}` });
       } else {
         res.status(200).json({ success_msg: "Product successfully updated" });
       }
@@ -304,18 +315,18 @@ app.put("/api/product", async (req, res) => {
 
 app.delete("/api/product", (req, res) => {
   const { id } = req.body;
-  if (!isInteger(parseInt(id, 10))) {
+  console.log();
+  if (!isInteger(id)) {
     res.status(400).json({ err_msg: "id is invalid" });
     return;
   }
   productModel
     .deleteProduct(id)
     .then((result) => {
-      if (result.affectedRows < 1) {
+      if (!result) {
         res
           .status(400)
           .json({ err_msg: `Failed to Delete product with ID ${id}` });
-        return;
       }
       res.status(200).json({ success_msg: "Product successfully deleted" });
     })
