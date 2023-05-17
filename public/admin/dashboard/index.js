@@ -1,4 +1,15 @@
 /* eslint-disable camelcase */
+
+// Checks if user's token is valid
+fetch("/admin/verify", {
+  method: "POST",
+  credentials: "same-origin",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({}),
+});
+
 /**
  *  updates the admin dashboard links
  * @param {[HTMLElement]} element The element link button that needs to be update
@@ -102,7 +113,7 @@ function loadCategoryPage() {
   </div>
 </div>
   `;
-  fetch("http://localhost:3000/api/category")
+  fetch("/api/category")
     .then((response) => response.json())
     .then((data) => {
       let categoryContent = `
@@ -160,7 +171,7 @@ function loadCategoryPage() {
       for (let i = 0; i < editCategoryButtons.length; i += 1) {
         editCategoryButtons[i].addEventListener("click", () => {
           const categoryId = editCategoryButtons[i].id.replace(/[^\d.]/g, "");
-          fetch(`http://localhost:3000/api/category/${categoryId}`)
+          fetch(`/api/category/${categoryId}`)
             .then((response) => response.json())
             .then((data) => {
               const { category } = data;
@@ -189,7 +200,7 @@ function submitCategoryCreateForm() {
     description: document.getElementById("createCategoryDescInput").value,
   };
 
-  fetch("/api/category", {
+  fetch("/api/admin/category", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -219,7 +230,7 @@ function submitCategoryUpdateForm() {
     description: document.getElementById("editCategoryDescInput").value,
   };
 
-  fetch("http://localhost:3000/api/category", {
+  fetch("/api/admin/category", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -324,6 +335,10 @@ function loadProductPage() {
       document
         .getElementById("createProductBtn")
         .addEventListener("click", () => {
+          document.getElementById("createProductNameInput").value = "";
+          document.getElementById("createProductPriceInput").value = "";
+          document.getElementById("createProductStockInput").value = "";
+          document.getElementById("createProductDescInput").value = "";
           showModal(createProductModal);
         });
 
@@ -371,7 +386,7 @@ function submitProductCreateForm() {
       .value,
   };
 
-  fetch("/api/product", {
+  fetch("/api/admin/product", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -410,7 +425,7 @@ function submitProductUpdateForm() {
     ),
   };
 
-  fetch("/api/product", {
+  fetch("/api/admin/product", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -436,7 +451,7 @@ function loadConfirmDeleteCategoryAlert() {
   const categoryId = document.getElementById("editCategoryIdInput").placeholder;
   const productId = document.getElementById("editProductIdInput").placeholder;
   if (!productId) {
-    fetch("/api/category", {
+    fetch("/api/admin/category", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -460,7 +475,7 @@ function loadConfirmDeleteCategoryAlert() {
         console.log("Error: ", err);
       });
   } else if (!categoryId) {
-    fetch("/api/product", {
+    fetch("/api/admin/product", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -491,7 +506,7 @@ document
   .getElementById("logout-btn")
   .addEventListener("click", function (event) {
     event.preventDefault();
-    fetch("http://localhost:3000/api/admin/logout", {
+    fetch("/api/admin/logout", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
