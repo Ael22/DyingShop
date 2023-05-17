@@ -2,7 +2,7 @@
 const jwt = require("jsonwebtoken");
 
 // eslint-disable-next-line consistent-return
-const verifyToken = async function (req, res, next) {
+const verifyToken = function (req, res, next) {
   if (!req.headers.cookie) {
     return res.status(403).send("Cookie does not exist!");
   }

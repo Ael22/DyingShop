@@ -8,7 +8,7 @@ document
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
-    fetch("http://localhost:3000/api/admin/login", {
+    fetch("/api/admin/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
