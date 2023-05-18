@@ -1,33 +1,47 @@
-const loginNotif = document.getElementById("login-notif");
-
-document
-  .getElementById("loginForm")
-  .addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-
-    fetch("/api/admin/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username: username, password: password }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.err_msg) {
-          loginNotif.textContent = data.err_msg;
-          loginNotif.className = "text-danger";
-        } else {
-          loginNotif.textContent = "-";
-          loginNotif.className = "text-light";
-          // TODO: Send redirect
-          window.location.replace("http://localhost:3000/admin/dashboard");
+async function loadCategoryDropdown() {
+  fetch("/api/category")
+    .then((response) => response.json())
+    .then((data) => {
+      const { categories } = data;
+      let categoryDropdownHTML = "";
+      for (let i = 0; i < categories.length; i += 1) {
+        categoryDropdownHTML += `
+      <li><a class="dropdown-item" href="#">${categories[i].name}</a></li>
+      `;
+        if (i < categories.length - 1) {
+          categoryDropdownHTML += `
+        <li><hr class="dropdown-divider" /></li>
+        `;
         }
-      })
-      .catch((error) => {
-        console.log("error: ", error);
-      });
-  });
+      }
+      document.getElementById("categoryDropdown").innerHTML =
+        categoryDropdownHTML;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+// TODO: fill up page with all products
+async function loadProducts() {
+  fetch("/api/product")
+    .then((response) => response.json())
+    .then((data) => {
+      const { products } = data;
+      console.log(products);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+function loadSiteResources() {
+  Promise.all([loadProducts(), loadCategoryDropdown()])
+    .then(() => {
+      console.log("Loading complete");
+    })
+    .catch((err) => {
+      console.error("Error ", err);
+    });
+}
+
+loadSiteResources();
