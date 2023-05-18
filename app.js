@@ -14,6 +14,7 @@ app.use("/admin/verify", verifyToken, (req, res) => {
   res.status(200).json({ success_msg: `User verified` });
 });
 app.use("/admin/dashboard", verifyToken);
+app.use("/uploads/", express.static("./uploads/"));
 app.use(express.static("public"));
 
 // 404 handler

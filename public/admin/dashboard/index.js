@@ -53,6 +53,9 @@ function renderProductFormCategoryMenu(selectMenuId) {
 renderProductFormCategoryMenu("editProductCatgorySelectMenu");
 renderProductFormCategoryMenu("createProductCategorySelectMenu");
 
+let selectedFile = "";
+const formData = new FormData();
+
 // Modal for createing new category
 const createCategoryModal = new bootstrap.Modal(
   document.getElementById("createCategoryModal")
@@ -124,7 +127,7 @@ function loadCategoryPage() {
           <tr>
             <th scope="col" class="col-1">ID</th>
             <th scope="col" class="col-2">Name</th>
-            <th scope="col" class="col-7">Description</th>
+            <th scope="col" class="col-6">Description</th>
             <th scope="col" class="col-2 text-center">Edit Category</th>
           </tr>
         </thead>
@@ -292,7 +295,8 @@ function loadProductPage() {
             <tr>
               <th scope="col" class="col-1">ID</th>
               <th scope="col" class="col-2">Name</th>
-              <th scope="col">Description</th>
+              <th scope="col" class="col-4">Description</th>
+              <th scope="col" class="col-1">Image</th>
               <th scope="col" class="col-1">Price</th>
               <th scope="col" class="col-1">Stock Quantity</th>
               <th scope="col" class="col-1">Category Id</th>
@@ -310,6 +314,7 @@ function loadProductPage() {
         <th scope="row">${id}</th>
         <td>${name}</td>
         <td>${description}</td>
+        <td><i class="fa-solid fa-check" style="color: #0f0f0f;"></i></td>
         <td>$${price}</td>
         <td>${stock_qty}</td>
         <td>${category_id}</td>
@@ -339,6 +344,7 @@ function loadProductPage() {
           document.getElementById("createProductPriceInput").value = "";
           document.getElementById("createProductStockInput").value = "";
           document.getElementById("createProductDescInput").value = "";
+          selectedFile = "";
           showModal(createProductModal);
         });
 
@@ -406,10 +412,33 @@ function submitProductCreateForm() {
       }
       showModal(feedbackModal);
       loadProductPage();
+    })
+    .catch((err) => {
+      console.error(err);
     });
 }
 
+const fileInput = document.getElementById("editProductFileInput");
+fileInput.addEventListener("change", (event) => {
+  selectedFile = event.target.files[0];
+
+  formData.append("file", selectedFile);
+  console.log(selectedFile);
+});
+
 function submitProductUpdateForm() {
+  fetch("/api/admin/product/upload", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+
   const editData = {
     id: parseInt(document.getElementById("editProductIdInput").placeholder, 10),
     name: document.getElementById("editProductNameInput").value,

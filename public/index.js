@@ -39,7 +39,7 @@ async function loadProducts() {
             <div class="col-4 mt-3">
             <a class="default-cursor" href="/product?id=${product.id}">
               <div class="card clickable" style="width: 20rem">
-                <img src="https://placehold.co/200" class="card-img-top" alt="..." />
+                <img src="${product.image_url}" class="card-img-top" alt="..." />
                 <div class="card-body">
                   <p class="card-title">${product.name}</p>
                   <h5 class="card-text">
