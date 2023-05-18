@@ -19,6 +19,15 @@ fetch(`/api/product/${productId}`)
     ).innerHTML += `${product.description}`;
     document.getElementById("productStock").innerHTML += `${product.stock_qty}`;
 
+    if (product.stock_qty === 0) {
+      document.getElementById("addToCartBtn").disabled = true;
+      document.getElementById("addToCartBtn").innerHTML = "Out of stock";
+      document.getElementById("addToCartBtn").classList = `btn btn-secondary`;
+    } else {
+      document.getElementById("addToCartBtn").disabled = false;
+      document.getElementById("addToCartBtn").classList = `btn btn-primary`;
+    }
+
     fetch(`/api/category/${product.category_id}`)
       .then((response) => response.json())
       .then((categoryData) => {
