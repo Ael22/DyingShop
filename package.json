@@ -7,6 +7,7 @@
         "is-decimal": "^2.0.1",
         "is-integer": "^1.0.7",
         "jsonwebtoken": "^9.0.0",
+        "multer": "^1.4.5-lts.1",
         "mysql2": "^2.3.3"
     },
     "scripts": {
