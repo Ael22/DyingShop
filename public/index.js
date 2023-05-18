@@ -3,32 +3,59 @@ async function loadCategoryDropdown() {
     .then((response) => response.json())
     .then((data) => {
       const { categories } = data;
-      let categoryDropdownHTML = "";
-      for (let i = 0; i < categories.length; i += 1) {
-        categoryDropdownHTML += `
-      <li><a class="dropdown-item" href="#">${categories[i].name}</a></li>
-      `;
-        if (i < categories.length - 1) {
-          categoryDropdownHTML += `
-        <li><hr class="dropdown-divider" /></li>
+      let categoryHTML = "";
+      categories.forEach((category) => {
+        categoryHTML += `
+        <a href="#">
+          <li class="list-group-item">
+            ${category.name}
+          </li>
+        </a>
         `;
-        }
-      }
-      document.getElementById("categoryDropdown").innerHTML =
-        categoryDropdownHTML;
+      });
+      document.getElementById("categoryList").innerHTML = categoryHTML;
     })
     .catch((err) => {
       console.log(err);
     });
 }
 
-// TODO: fill up page with all products
 async function loadProducts() {
   fetch("/api/product")
     .then((response) => response.json())
     .then((data) => {
       const { products } = data;
-      console.log(products);
+      let productHTML = "";
+      products.forEach((product) => {
+        let footerText = `
+          <small class="fw-bold">${product.stock_qty} left</small>
+        `;
+        if (product.stock_qty < 1) {
+          footerText = `
+          <small class="fw-bold text-danger">Out of Stock</small>
+          `;
+        }
+        productHTML += `
+            <div class="col-4 mt-3">
+            <a class="default-cursor" href="/product?id=${product.id}">
+              <div class="card clickable" style="width: 20rem">
+                <img src="https://placehold.co/200" class="card-img-top" alt="..." />
+                <div class="card-body">
+                  <p class="card-title">${product.name}</p>
+                  <h5 class="card-text">
+                    S$${product.price}
+                  </h5>
+                </div>
+                <div class="card-footer">
+                ${footerText}
+                </div>
+              </div>
+            </a>
+            </div>
+        `;
+      });
+
+      document.getElementById("productListing").innerHTML = productHTML;
     })
     .catch((err) => {
       console.log(err);
