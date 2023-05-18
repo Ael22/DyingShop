@@ -9,10 +9,6 @@ const loginRoutes = require("./admin/login");
 const categoryRoutes = require("./admin/category");
 const productRoutes = require("./admin/product");
 
-router.get("/router/test", (req, res) => {
-  res.status(200).json({ message: "Hello World" });
-});
-
 router.use("/admin", loginRoutes);
 router.use("/admin", categoryRoutes);
 router.use("/admin", productRoutes);
