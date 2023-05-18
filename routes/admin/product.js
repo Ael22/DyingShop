@@ -1,4 +1,7 @@
 const express = require("express");
+const { v4: uuidv4 } = require("uuid");
+const multer = require("multer");
+const fs = require("fs").promises;
 
 const verifyToken = require("../../auth/verifyToken");
 
@@ -6,6 +9,11 @@ const categoryModel = require("../../models/category");
 const productModel = require("../../models/product");
 
 const router = express.Router();
+const upload = multer({
+  limits: {
+    fileSize: "2MB",
+  },
+});
 
 router.use("/product", verifyToken);
 
@@ -107,6 +115,32 @@ router.delete("/product", (req, res) => {
       console.error("Error :", err);
       res.status(500).json({ err_msg: "Internal server error" });
     });
+});
+
+// TODO: A lot of validation...
+router.post("/product/upload", upload.single("file"), (req, res) => {
+  try {
+    console.log(req.file);
+    const fileExt = req.file.originalname.split(".").pop().replace(/ /g, "");
+
+    if (!["png", "jpg", "jpeg"].includes(fileExt)) {
+      res.status(415).send();
+      return;
+    }
+    const filepath = `./uploads/productImages/${uuidv4()}.${fileExt}`;
+
+    fs.writeFile(filepath, req.file.buffer, (err) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send();
+        return;
+      }
+      res.status(200).json({ success_msg: `Image upload success` });
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err_msg: err });
+  }
 });
 
 module.exports = router;
