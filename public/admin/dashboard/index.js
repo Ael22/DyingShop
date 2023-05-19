@@ -53,6 +53,9 @@ function renderProductFormCategoryMenu(selectMenuId) {
 renderProductFormCategoryMenu("editProductCatgorySelectMenu");
 renderProductFormCategoryMenu("createProductCategorySelectMenu");
 
+let selectedFile = "";
+let formData = new FormData();
+
 // Modal for createing new category
 const createCategoryModal = new bootstrap.Modal(
   document.getElementById("createCategoryModal")
@@ -124,7 +127,7 @@ function loadCategoryPage() {
           <tr>
             <th scope="col" class="col-1">ID</th>
             <th scope="col" class="col-2">Name</th>
-            <th scope="col" class="col-7">Description</th>
+            <th scope="col" class="col-6">Description</th>
             <th scope="col" class="col-2 text-center">Edit Category</th>
           </tr>
         </thead>
@@ -292,7 +295,8 @@ function loadProductPage() {
             <tr>
               <th scope="col" class="col-1">ID</th>
               <th scope="col" class="col-2">Name</th>
-              <th scope="col">Description</th>
+              <th scope="col" class="col-4">Description</th>
+              <th scope="col" class="col-1">Image</th>
               <th scope="col" class="col-1">Price</th>
               <th scope="col" class="col-1">Stock Quantity</th>
               <th scope="col" class="col-1">Category Id</th>
@@ -310,6 +314,7 @@ function loadProductPage() {
         <th scope="row">${id}</th>
         <td>${name}</td>
         <td>${description}</td>
+        <td><i class="fa-solid fa-check" style="color: #0f0f0f;"></i></td>
         <td>$${price}</td>
         <td>${stock_qty}</td>
         <td>${category_id}</td>
@@ -406,8 +411,19 @@ function submitProductCreateForm() {
       }
       showModal(feedbackModal);
       loadProductPage();
+    })
+    .catch((err) => {
+      console.error(err);
     });
 }
+
+const fileInput = document.getElementById("editProductFileInput");
+fileInput.addEventListener("change", (event) => {
+  selectedFile = event.target.files[0];
+
+  formData.append("file", selectedFile);
+  console.log(selectedFile);
+});
 
 function submitProductUpdateForm() {
   const editData = {
@@ -424,7 +440,6 @@ function submitProductUpdateForm() {
       10
     ),
   };
-
   fetch("/api/admin/product", {
     method: "PUT",
     headers: {
@@ -434,16 +449,57 @@ function submitProductUpdateForm() {
   })
     .then((response) => response.json())
     .then((data) => {
-      hideModal(editProductModal);
       if (data.success_msg) {
-        document.getElementById("feedbackModalContent").innerText =
-          data.success_msg;
+        if (!selectedFile) {
+          document.getElementById(
+            "feedbackModalContent"
+          ).innerText = `${data.success_msg}`;
+          return;
+        }
+        fetch(
+          `/api/admin/product/${parseInt(
+            document.getElementById("editProductIdInput").placeholder,
+            10
+          )}/upload`,
+          {
+            method: "PUT",
+            body: formData,
+          }
+        )
+          .then((response) => {
+            if (response.ok) {
+              console.log(response);
+              return response.json();
+            }
+            console.log(response.status);
+            throw new Error(`Failed to upload image`);
+          })
+          .then((imageData) => {
+            document.getElementById(
+              "feedbackModalContent"
+            ).innerText = `${data.success_msg}\n${imageData.success_msg}`;
+          })
+          .catch((err) => {
+            document.getElementById("feedbackModalContent").innerText =
+              err.message;
+          });
       } else {
         document.getElementById("feedbackModalContent").innerText =
           data.err_msg;
       }
+    })
+    .then(() => {
+      hideModal(editProductModal);
       showModal(feedbackModal);
       loadProductPage();
+    })
+    .catch((err) => {
+      console.error("Error ", err);
+    })
+    .finally(() => {
+      formData = new FormData();
+      document.getElementById("editProductFileInput").value = "";
+      selectedFile = "";
     });
 }
 

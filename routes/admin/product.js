@@ -1,4 +1,7 @@
 const express = require("express");
+const { v4: uuidv4 } = require("uuid");
+const multer = require("multer");
+const fs = require("fs").promises;
 
 const verifyToken = require("../../auth/verifyToken");
 
@@ -6,6 +9,11 @@ const categoryModel = require("../../models/category");
 const productModel = require("../../models/product");
 
 const router = express.Router();
+const upload = multer({
+  limits: {
+    fileSize: "2MB",
+  },
+});
 
 router.use("/product", verifyToken);
 
@@ -107,6 +115,55 @@ router.delete("/product", (req, res) => {
       console.error("Error :", err);
       res.status(500).json({ err_msg: "Internal server error" });
     });
+});
+
+// TODO: A lot of validation...
+router.put("/product/:id/upload", upload.single("file"), (req, res) => {
+  try {
+    console.log("image upload thing for product ", req.params.id);
+    if (!req.file || !req.params.id) {
+      res.status(406).json({ err_msg: `No file found` });
+      return;
+    }
+    const { id } = req.params;
+    console.log(req.file);
+    const fileExt = req.file.originalname.split(".").pop().replace(/ /g, "");
+
+    console.log("checking file");
+    if (!["png", "jpg", "jpeg", "PNG"].includes(fileExt)) {
+      res.status(415).send();
+      return;
+    }
+    const filepath = `./uploads/productImages/${uuidv4()}.${fileExt}`;
+
+    console.log("writing file");
+    fs.writeFile(filepath, req.file.buffer, (err) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send();
+        return;
+      }
+      console.log("file writing done");
+    });
+
+    console.log("updating database");
+    productModel
+      .updateProductImage(id, filepath)
+      .then((result) => {
+        if (!result) {
+          res.status(500).json({ success_msg: `Image upload failed` });
+          return;
+        }
+        res.status(200).json({ success_msg: `Image upload success` });
+      })
+      .catch((err) => {
+        console.error("Error: ", err);
+        res.status(500).json({ success_msg: `Image upload failed` });
+      });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err_msg: `Internal server error` });
+  }
 });
 
 module.exports = router;

@@ -44,10 +44,10 @@
       </div>
       <div class="row mt-3">
         <div class="col-1"></div>
-        <div class="col-4">
-          <img class="img-fluid" src="https://placehold.co/550" alt="..." />
+        <div class="col-4 p-0" style="overflow-x: scroll">
+          <img id="productImage" style="height: 40.625em" />
         </div>
-        <div class="col-6">
+        <div class="col-6 px-4">
           <div>
             <h1 id="productHeader"></h1>
             <h4 id="productPrice"></h4>
@@ -59,18 +59,34 @@
             </p>
             <p id="productDesc" style="height: 14.52em; overflow: hidden">
               <span class="fw-bold">Description: </span>
-              This is an example paragraph that will always occupy the space of
-              5 lines.
             </p>
             <p id="productStock">
               <span class="fw-bold">Stock: </span>
             </p>
-            <button class="btn btn-primary">Add to cart</button>
+            <button id="addToCartBtn" class="btn">Add to cart</button>
           </div>
         </div>
         <div class="col-1"></div>
       </div>
     </div>
+    <footer
+      class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top"
+    >
+      <div class="col-md-4 d-flex align-items-center">
+        <a
+          href="/"
+          class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1"
+        >
+          <svg class="bi" width="30" height="24">
+            <use xlink:href="#bootstrap"></use>
+          </svg>
+        </a>
+        <span class="mb-3 mb-md-0 text-body-secondary">© 2023 Hoh Wei De</span>
+      </div>
+
+      <ul class="nav col-md-4 justify-content-end list-unstyled d-flex"></ul>
+    </footer>
+
     <script
       defer
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
