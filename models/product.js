@@ -1,6 +1,7 @@
 const fs = require("fs").promises;
 
 const pool = require("../database");
+
 const product = {
   async getAllProducts() {
     try {
