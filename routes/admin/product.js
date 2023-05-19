@@ -120,28 +120,46 @@ router.delete("/product", (req, res) => {
 // TODO: A lot of validation...
 router.put("/product/:id/upload", upload.single("file"), (req, res) => {
   try {
-    if (!req.file) {
+    console.log("image upload thing for product ", req.params.id);
+    if (!req.file || !req.params.id) {
       res.status(406).json({ err_msg: `No file found` });
       return;
     }
+    const { id } = req.params;
     console.log(req.file);
     const fileExt = req.file.originalname.split(".").pop().replace(/ /g, "");
 
-    if (!["png", "jpg", "jpeg"].includes(fileExt)) {
+    console.log("checking file");
+    if (!["png", "jpg", "jpeg", "PNG"].includes(fileExt)) {
       res.status(415).send();
       return;
     }
     const filepath = `./uploads/productImages/${uuidv4()}.${fileExt}`;
 
+    console.log("writing file");
     fs.writeFile(filepath, req.file.buffer, (err) => {
       if (err) {
         console.log(err);
         res.status(500).send();
         return;
       }
-      productModel.updateProductImage();
-      res.status(200).json({ success_msg: `Image upload success` });
+      console.log("file writing done");
     });
+
+    console.log("updating database");
+    productModel
+      .updateProductImage(id, filepath)
+      .then((result) => {
+        if (!result) {
+          res.status(500).json({ success_msg: `Image upload failed` });
+          return;
+        }
+        res.status(200).json({ success_msg: `Image upload success` });
+      })
+      .catch((err) => {
+        console.error("Error: ", err);
+        res.status(500).json({ success_msg: `Image upload failed` });
+      });
   } catch (err) {
     console.error(err);
     res.status(500).json({ err_msg: `Internal server error` });

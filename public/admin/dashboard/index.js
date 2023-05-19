@@ -54,7 +54,7 @@ renderProductFormCategoryMenu("editProductCatgorySelectMenu");
 renderProductFormCategoryMenu("createProductCategorySelectMenu");
 
 let selectedFile = "";
-const formData = new FormData();
+let formData = new FormData();
 
 // Modal for createing new category
 const createCategoryModal = new bootstrap.Modal(
@@ -344,7 +344,6 @@ function loadProductPage() {
           document.getElementById("createProductPriceInput").value = "";
           document.getElementById("createProductStockInput").value = "";
           document.getElementById("createProductDescInput").value = "";
-          selectedFile = "";
           showModal(createProductModal);
         });
 
@@ -427,24 +426,6 @@ fileInput.addEventListener("change", (event) => {
 });
 
 function submitProductUpdateForm() {
-  fetch(
-    `/api/admin/product/${parseInt(
-      document.getElementById("editProductIdInput").placeholder,
-      10
-    )}/upload`,
-    {
-      method: "POST",
-      body: formData,
-    }
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-
   const editData = {
     id: parseInt(document.getElementById("editProductIdInput").placeholder, 10),
     name: document.getElementById("editProductNameInput").value,
@@ -459,7 +440,6 @@ function submitProductUpdateForm() {
       10
     ),
   };
-
   fetch("/api/admin/product", {
     method: "PUT",
     headers: {
@@ -469,16 +449,57 @@ function submitProductUpdateForm() {
   })
     .then((response) => response.json())
     .then((data) => {
-      hideModal(editProductModal);
       if (data.success_msg) {
-        document.getElementById("feedbackModalContent").innerText =
-          data.success_msg;
+        if (!selectedFile) {
+          document.getElementById(
+            "feedbackModalContent"
+          ).innerText = `${data.success_msg}`;
+          return;
+        }
+        fetch(
+          `/api/admin/product/${parseInt(
+            document.getElementById("editProductIdInput").placeholder,
+            10
+          )}/upload`,
+          {
+            method: "PUT",
+            body: formData,
+          }
+        )
+          .then((response) => {
+            if (response.ok) {
+              console.log(response);
+              return response.json();
+            }
+            console.log(response.status);
+            throw new Error(`Failed to upload image`);
+          })
+          .then((imageData) => {
+            document.getElementById(
+              "feedbackModalContent"
+            ).innerText = `${data.success_msg}\n${imageData.success_msg}`;
+          })
+          .catch((err) => {
+            document.getElementById("feedbackModalContent").innerText =
+              err.message;
+          });
       } else {
         document.getElementById("feedbackModalContent").innerText =
           data.err_msg;
       }
+    })
+    .then(() => {
+      hideModal(editProductModal);
       showModal(feedbackModal);
       loadProductPage();
+    })
+    .catch((err) => {
+      console.error("Error ", err);
+    })
+    .finally(() => {
+      formData = new FormData();
+      document.getElementById("editProductFileInput").value = "";
+      selectedFile = "";
     });
 }
 

@@ -1,10 +1,11 @@
-const pool = require("../database");
+const fs = require("fs").promises;
 
+const pool = require("../database");
 const product = {
   async getAllProducts() {
     try {
       const result = await pool.query(`SELECT * FROM products`, []);
-      console.log("Query executed: ");
+      console.log("Query executed ");
       return result[0];
     } catch (err) {
       console.error("Error executing the SQL Statement: ", err);
@@ -75,17 +76,29 @@ const product = {
 
   async updateProductImage(id, filePath) {
     try {
-      const result = await pool.query(
+      const previousUrlResult = await pool.query(
+        `SELECT image_url FROM products WHERE id = ?`,
+        [id]
+      );
+      const previousUrl = previousUrlResult[0][0].image_url;
+
+      if (previousUrl !== `/uploads/productImages/default.png`) {
+        await fs.unlink(`${process.cwd() + previousUrl}`);
+        console.log("File deleted");
+      }
+
+      const updateResult = await pool.query(
         `UPDATE products SET image_url = ? WHERE id = ?`,
-        [filePath, id]
+        [filePath.slice(1), id]
       );
       console.log("Query executed");
-      if (result[0].affectedRows < 1) {
+
+      if (updateResult[0].affectedRows < 1) {
         return false;
       }
       return true;
     } catch (err) {
-      console.error(err);
+      console.error("Error", err);
       throw err;
     }
   },
