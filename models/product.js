@@ -72,6 +72,23 @@ const product = {
       throw err;
     }
   },
+
+  async updateProductImage(id, filePath) {
+    try {
+      const result = await pool.query(
+        `UPDATE products SET image_url = ? WHERE id = ?`,
+        [filePath, id]
+      );
+      console.log("Query executed");
+      if (result[0].affectedRows < 1) {
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  },
 };
 
 module.exports = product;

@@ -427,10 +427,16 @@ fileInput.addEventListener("change", (event) => {
 });
 
 function submitProductUpdateForm() {
-  fetch("/api/admin/product/upload", {
-    method: "POST",
-    body: formData,
-  })
+  fetch(
+    `/api/admin/product/${parseInt(
+      document.getElementById("editProductIdInput").placeholder,
+      10
+    )}/upload`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  )
     .then((response) => response.json())
     .then((data) => {
       console.log(data);

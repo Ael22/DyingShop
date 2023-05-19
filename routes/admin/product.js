@@ -118,8 +118,12 @@ router.delete("/product", (req, res) => {
 });
 
 // TODO: A lot of validation...
-router.post("/product/upload", upload.single("file"), (req, res) => {
+router.put("/product/:id/upload", upload.single("file"), (req, res) => {
   try {
+    if (!req.file) {
+      res.status(406).json({ err_msg: `No file found` });
+      return;
+    }
     console.log(req.file);
     const fileExt = req.file.originalname.split(".").pop().replace(/ /g, "");
 
@@ -135,11 +139,12 @@ router.post("/product/upload", upload.single("file"), (req, res) => {
         res.status(500).send();
         return;
       }
+      productModel.updateProductImage();
       res.status(200).json({ success_msg: `Image upload success` });
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ err_msg: err });
+    res.status(500).json({ err_msg: `Internal server error` });
   }
 });
 
