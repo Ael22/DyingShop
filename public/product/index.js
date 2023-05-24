@@ -13,7 +13,7 @@ fetch(`/api/product/${productId}`)
     const { product } = productData;
     document.getElementById("productHeader").innerText = product.name;
     document.getElementById("productPrice").innerText = `S$${product.price}`;
-    document.getElementById("productImage").src = `.${product.image_url}`;
+    document.getElementById("productImage").src = `..${product.image_url}`;
     document.getElementById(
       "productDesc"
     ).innerHTML += `${product.description}`;
