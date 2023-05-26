@@ -5,9 +5,9 @@ const router = express.Router();
 
 const DOMAIN = "http://localhost:3000";
 
-router.post("/checkout", async (req, res) => {
+router.post("/", async (req, res) => {
   const session = await stripe.checkout.sessions.create({
-    Line_items: [
+    line_items: [
       {
         price_data: {
           currency: "sgd",
@@ -24,7 +24,6 @@ router.post("/checkout", async (req, res) => {
     success_url: `${DOMAIN}/success.html`,
     cancel_url: `${DOMAIN}/cancel.html`,
   });
-
   res.redirect(303, session.url);
 });
 
