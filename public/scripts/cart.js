@@ -52,8 +52,10 @@ async function loadCart() {
   const cartItems = getCartContents();
   if (cartItems.length === 0) {
     document.getElementById("cartModalBody").innerHTML = "Your cart is empty";
+    document.getElementById("checkoutBtn").disabled = true;
     return;
   }
+  document.getElementById("checkoutBtn").disabled = false;
   let totalAmount = 0;
   let content = `
       <table id="cartTable" class="table table-striped align-middle">
