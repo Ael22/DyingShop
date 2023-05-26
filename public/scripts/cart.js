@@ -150,3 +150,31 @@ document.getElementById("cartBtn").addEventListener("click", () => {
 
   shoppingCartModal.show();
 });
+
+document.getElementById("checkoutBtn").addEventListener("click", () => {
+  const cartItems = getCartContents();
+  if (!cartItems.length) {
+    return;
+  }
+
+  fetch("/api/checkout/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ cartItems }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      if (data.err_msg) {
+        alert(data.err_msg);
+      }
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    })
+    .catch((err) => {
+      console.error("Error: ", err);
+    });
+});
