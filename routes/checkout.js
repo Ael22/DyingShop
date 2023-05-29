@@ -65,7 +65,7 @@ router.post("/", async (req, res) => {
       if (cartItems[j].quantity > dbCartItems[j][0].stock_qty) {
         errorFlag = true;
         res.status(401).json({
-          err_msg: `${cartItems[j].name} does not have enough stock! Enter a quantity lower than ${cartItems[j].quantity} for ${cartItems[j].name}`,
+          err_msg: `${cartItems[j].name} does not have enough stock! Enter a quantity lower than ${dbCartItems[j][0].stock_qty} for ${cartItems[j].name}`,
         });
         break;
       }
