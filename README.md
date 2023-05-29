@@ -1,7 +1,6 @@
 # BED Recap - Module Management
 
-- Hoh Wei de
-- Jeremiah (P1121782)
+- Hoh Wei De (P2104328)
 
 ## Setup
 
@@ -14,8 +13,11 @@
    DB_PASSWORD=
    DB_HOST=
    DB_DATABASE=
-   DB_CONNECTION_LIMIT=10
-   PORT=3000
+   DB_CONNECTION_LIMIT=
+   PORT=
+   JWT_SECRET=
+   STRIPE_KEY=
+   STRIPE_WEBHOOK_SECRET=
    ```
 
 3. Update the .env content with your database credentials accordingly.
@@ -25,13 +27,3 @@
 5. Start the app by running `npm start`
 
 6. You should see `App listening on port 3000`
-
-7. Using POSTMAN (or any HTTP client), send a `POST /modules/table` request to create the tables.
-
-## Instructions
-
-1. Open the page, `http://localhost:3000`, replace the port number accordingly if you app is not listening to port 3000
-
-2. You should see the list of instructions on the web page.
-
-3. Make changes, create commits, and push to the repository to submit your implementations.
