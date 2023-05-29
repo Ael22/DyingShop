@@ -11,7 +11,7 @@ function getCartContents() {
   return [];
 }
 
-function addToCart(item) {
+async function addToCart(item) {
   const cartItems = getCartContents();
   const existingItem = cartItems.find((cartItem) => item.id === cartItem.id);
 
