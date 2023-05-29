@@ -103,6 +103,22 @@ const product = {
       throw err;
     }
   },
+
+  async updateProductStock(id, qty) {
+    try {
+      const result = await pool.query(
+        `UPDATE products SET stock_qty = stock_qty - ? WHERE id = ?`,
+        [qty, id]
+      );
+      if (result[0].affectedRows < 1) {
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error("Error executing the SQL Statement: ", err);
+      throw err;
+    }
+  },
 };
 
 module.exports = product;
