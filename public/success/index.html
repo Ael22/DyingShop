@@ -10,44 +10,24 @@
       integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
       crossorigin="anonymous"
     />
-    <style>
-      a {
-        text-decoration: none !important;
-        border: none;
-      }
-
-      .list-group-item {
-        border: 0.1em solid #ffffff !important;
-        transition: all 0.3s ease;
-      }
-
-      .list-group-item:hover {
-        transform: translateX(5px);
-      }
-
-      .list-group-item:hover {
-        border-bottom: 0.1em solid black !important;
-      }
-
-      .default-cursor {
-        cursor: default;
-      }
-
-      .clickable {
-        cursor: pointer;
-      }
-
-      .card {
-        transition: box-shadow 0.3s ease;
-      }
-
-      .card:hover {
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-      }
-    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
   </head>
+  <style>
+    footer {
+      position: fixed;
+      height: 80px;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
   <body>
-    <nav class="navbar navbar-expand-lg bg-dark p-3" data-bs-theme="dark">
+    <nav
+      class="fixed-top navbar navbar-expand-lg bg-dark p-3"
+      data-bs-theme="dark"
+    >
       <div class="container-fluid">
         <a class="navbar-brand" href="/">Dying shop</a>
         <button
@@ -69,41 +49,30 @@
         </div>
       </div>
     </nav>
-    <div class="container-fluid">
-      <div class="row mt-4">
-        <div class="col-1"></div>
-        <div class="col-2 mt-2 border-end">
-          <h2>Categories</h2>
-          <ul class="list-group list-group-flush mt-3" id="categoryList"></ul>
+
+    <div class="vh-100 d-flex justify-content-center align-items-center">
+      <div class="card col-md-4 bg-white shadow-md p-5">
+        <div class="mb-4 text-center"></div>
+        <div class="text-center">
+          <h1 class="display-1">
+            <i class="fa-solid fa-check text-success"></i>
+          </h1>
+          <h1>Thank You !</h1>
+          <p>
+            We have received your payment. Something will probably happen
+            soon...
+          </p>
+          <button class="btn btn-outline-success" onclick="location.href='/'">
+            Back Home
+          </button>
         </div>
-        <div class="col-8">
-          <h1>Products</h1>
-          <div class="row" id="productListing">
-            <div
-              class="spinner-border m-2"
-              style="width: 3rem; height: 3rem"
-              role="status"
-            >
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </div>
-        </div>
-        <div class="col-1"></div>
       </div>
     </div>
 
     <footer
-      class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top"
+      class="footer d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top"
     >
-      <div class="col-md-4 d-flex align-items-center">
-        <a
-          href="/"
-          class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1"
-        >
-          <svg class="bi" width="30" height="24">
-            <use xlink:href="#bootstrap"></use>
-          </svg>
-        </a>
+      <div class="col-md-4 ms-4 d-flex align-items-center">
         <span class="mb-3 mb-md-0 text-body-secondary">© 2023 Hoh Wei De</span>
       </div>
 
@@ -153,7 +122,7 @@
       integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
       crossorigin="anonymous"
     ></script>
-    <script src="./index.js" defer></script>
-    <script src="./scripts/cart.js" defer></script>
+    <script defer src="/scripts/cart.js"></script>
+    <script defer src="/success/index.js"></script>
   </body>
 </html>

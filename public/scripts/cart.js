@@ -37,7 +37,7 @@ function editCartQty(editArr) {
   sessionStorage.setItem("cartItems", JSON.stringify(cartItems));
 }
 
-function removeFromCart(itemId) {
+async function removeFromCart(itemId) {
   const cartItems = getCartContents();
   const updatedCartItems = cartItems.filter((cartItem) => {
     console.log(cartItem.id, itemId);
@@ -52,8 +52,10 @@ async function loadCart() {
   const cartItems = getCartContents();
   if (cartItems.length === 0) {
     document.getElementById("cartModalBody").innerHTML = "Your cart is empty";
+    document.getElementById("checkoutBtn").disabled = true;
     return;
   }
+  document.getElementById("checkoutBtn").disabled = false;
   let totalAmount = 0;
   let content = `
       <table id="cartTable" class="table table-striped align-middle">
@@ -91,7 +93,9 @@ async function loadCart() {
           <td>
             <button type="button" class="btn btn-danger removeItemBtn" value="${
               cartItems[i].id
-            }">Remove</button>
+            }" onclick="removeFromCart(${
+      cartItems[i].id
+    }).then(() => {loadCart()})">Remove</button>
           </td>
         </tr>
       `;
@@ -142,16 +146,35 @@ document.getElementById("cartBtn").addEventListener("click", () => {
           `;
       });
     });
-    const removeBtns = document.getElementsByClassName(
-      "btn btn-danger removeItemBtn"
-    );
-    for (let i = 0; i < removeBtns.length; i += 1) {
-      removeBtns[i].addEventListener("click", () => {
-        removeFromCart(removeBtns[i].value);
-        loadCart();
-      });
-    }
   });
 
   shoppingCartModal.show();
+});
+
+document.getElementById("checkoutBtn").addEventListener("click", () => {
+  const cartItems = getCartContents();
+  if (!cartItems.length) {
+    return;
+  }
+
+  fetch("/api/checkout/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ cartItems }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      if (data.err_msg) {
+        alert(data.err_msg);
+      }
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    })
+    .catch((err) => {
+      console.error("Error: ", err);
+    });
 });

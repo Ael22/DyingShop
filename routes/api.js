@@ -8,10 +8,13 @@ const productModel = require("../models/product");
 const loginRoutes = require("./admin/login");
 const categoryRoutes = require("./admin/category");
 const productRoutes = require("./admin/product");
+const checkoutRoutes = require("./checkout");
 
 router.use("/admin", loginRoutes);
 router.use("/admin", categoryRoutes);
 router.use("/admin", productRoutes);
+
+router.use("/checkout", checkoutRoutes);
 
 router.get("/category", (req, res) => {
   try {
