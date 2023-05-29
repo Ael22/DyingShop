@@ -4,6 +4,7 @@ const stripe = require("stripe")(process.env.STRIPE_KEY);
 const router = express.Router();
 
 const productModel = require("../models/product");
+const stripeSessionModel = require("../models/stripeSession");
 
 const DOMAIN = "http://localhost:3000";
 
@@ -91,10 +92,19 @@ router.post("/", async (req, res) => {
 
     const session = await stripe.checkout.sessions.create({
       line_items: lineItemData,
+      invoice_creation: {
+        enabled: true,
+      },
       mode: "payment",
-      success_url: `${DOMAIN}/success.html`,
-      cancel_url: `${DOMAIN}/cancel.html`,
+      success_url: `${DOMAIN}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${DOMAIN}/cancel?session_id={CHECKOUT_SESSION_ID}`,
     });
+
+    await stripeSessionModel.createSession(
+      session.id,
+      JSON.stringify(cartItems)
+    );
+
     res.status(303).json({ url: session.url });
   } catch (err) {
     console.error("Error: ", err);
