@@ -2,6 +2,7 @@ const express = require("express");
 const { v4: uuidv4 } = require("uuid");
 const multer = require("multer");
 const fs = require("fs").promises;
+const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 const verifyToken = require("../../auth/verifyToken");
 
@@ -16,6 +17,26 @@ const upload = multer({
 });
 
 router.use("/product", verifyToken);
+
+router.get("/product/payment", async (req, res) => {
+  const paymentIntents = await stripe.paymentIntents.list();
+  let totalSales = 0;
+  let totalNumberOfSales = 0;
+  for (let i = 0; i < paymentIntents.data.length; i += 1) {
+    if (
+      paymentIntents.data[i].status === "succeeded" &&
+      paymentIntents.data[i].currency === "sgd"
+    ) {
+      totalSales += paymentIntents.data[i].amount_received;
+      totalNumberOfSales += 1;
+    }
+  }
+  totalSales = (totalSales / 100).toFixed(2);
+  res.status(200).json({
+    Total_Sales: totalSales,
+    Number_of_Sales: totalNumberOfSales,
+  });
+});
 
 router.post("/product", (req, res) => {
   const { name, description, price, stockQty, categoryId } = req.body;
