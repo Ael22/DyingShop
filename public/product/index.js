@@ -4,7 +4,7 @@ const url = new URL(urlString);
 const productId = url.searchParams.get("id");
 
 if (!productId) {
-  // TODO: send redirect
+  window.location.href = "/";
 }
 
 /*
@@ -38,6 +38,9 @@ fetch(`/api/product/${productId}`)
   .then((response) => response.json())
   .then((productData) => {
     const { product } = productData;
+    if (!product) {
+      window.location.href = "/";
+    }
     document.getElementById("productHeader").innerText = product.name;
     document.getElementById("productPrice").innerText = `S$${product.price}`;
     document.getElementById("productImage").src = `..${product.image_url}`;
