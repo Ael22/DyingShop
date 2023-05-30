@@ -9,7 +9,6 @@ const verifyToken = require("../../auth/verifyToken");
 
 const categoryModel = require("../../models/category");
 const productModel = require("../../models/product");
-const { error } = require("console");
 
 const router = express.Router();
 const upload = multer({
