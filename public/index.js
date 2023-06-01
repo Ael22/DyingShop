@@ -1,41 +1,49 @@
-async function loadCategoryDropdown() {
-  fetch("/api/category")
-    .then((response) => response.json())
-    .then((data) => {
-      const { categories } = data;
-      let categoryHTML = "";
-      categories.forEach((category) => {
-        categoryHTML += `
+/**
+ * Function that loads the category side menu
+ * @param {JSON} data JSON data of categories
+ */
+async function loadCategoryDropdown(data) {
+  const { categories } = data;
+  if (!categories) {
+    document.getElementById("categoryList").innerHTML =
+      "Categories cannot be loaded";
+    return;
+  }
+  let categoryHTML = "";
+  categories.forEach((category) => {
+    categoryHTML += `
         <a href="#">
           <li class="list-group-item">
             ${category.name}
           </li>
         </a>
         `;
-      });
-      document.getElementById("categoryList").innerHTML = categoryHTML;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  });
+  document.getElementById("categoryList").innerHTML = categoryHTML;
 }
 
-async function loadProducts() {
-  fetch("/api/product")
-    .then((response) => response.json())
-    .then((data) => {
-      const { products } = data;
-      let productHTML = "";
-      products.forEach((product) => {
-        let footerText = `
+/**
+ * Function that loads the home page with cards of products
+ * @param {JSON} data JSON data of products
+ */
+async function loadProducts(data) {
+  const { products } = data;
+  if (!products) {
+    document.getElementById("productListing").innerHTML =
+      "Products cannot be loaded";
+    return;
+  }
+  let productHTML = "";
+  products.forEach((product) => {
+    let footerText = `
           <small class="fw-bold">${product.stock_qty} left</small>
         `;
-        if (product.stock_qty < 1) {
-          footerText = `
+    if (product.stock_qty < 1) {
+      footerText = `
           <small class="fw-bold text-danger">Out of Stock</small>
           `;
-        }
-        productHTML += `
+    }
+    productHTML += `
             <div class="col-4 mt-3">
             <a class="default-cursor" href="/product?id=${product.id}">
               <div class="card clickable" style="width: 20rem">
@@ -53,22 +61,24 @@ async function loadProducts() {
             </a>
             </div>
         `;
-      });
+  });
 
-      document.getElementById("productListing").innerHTML = productHTML;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
-function loadSiteResources() {
-  Promise.all([loadProducts(), loadCategoryDropdown()])
-    .then(() => {
-      console.log("Loading complete");
-    })
-    .catch((err) => {
-      console.error("Error ", err);
-    });
+  document.getElementById("productListing").innerHTML = productHTML;
 }
 
-loadSiteResources();
+/**
+ * Function that fetches required data and render the whole page
+ */
+async function renderSite() {
+  try {
+    const data = await Promise.all([
+      fetch("/api/category").then((response) => response.json()),
+      fetch("/api/product").then((response) => response.json()),
+    ]);
+    Promise.all([loadCategoryDropdown(data[0]), loadProducts(data[1])]);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+renderSite();
