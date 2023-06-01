@@ -30,15 +30,19 @@ const verifyToken = function (req, res, next) {
   jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
     // if theres an error verifying the token
     if (err) {
-      // log the error and send user a 403 response
+      // log the error and redirect user
       console.log(err);
-      return res.status(403).send("Unable to Verify User!");
+      res.redirect("/admin");
+      return;
     }
     // check if the decoded token contains admin authentication
     if (!decoded.adminAuth) {
       // token does not contain admin authentication so send a 401 response
-      return res.status(401).send("Access Forbidden!");
+      console.log("user not admin");
+      res.redirect("/admin");
+      return;
     }
+
     // Token passed all checks so move on to the next function
     next();
   });

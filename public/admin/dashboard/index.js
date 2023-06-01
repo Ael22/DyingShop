@@ -1,15 +1,5 @@
 /* eslint-disable camelcase */
 
-// Checks if user's token is valid
-fetch("http://localhost:3000/admin/verify")
-  .then((response) => response.json())
-  .then((data) => {
-    console.log(data);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-
 /**
  *  updates the admin dashboard links
  * @param {[HTMLElement]} element The element link button that needs to be update
