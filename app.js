@@ -114,11 +114,6 @@ app.use(express.json()); // to process JSON in request body
 // connecting routes
 app.use("/api", apiRouter);
 
-// Admin veirification endpoint
-app.use("/admin/verify", verifyToken, (req, res) => {
-  res.status(200).json({ success_msg: `User verified` });
-});
-
 // Mount verifyToken middleware for admin site
 app.use("/admin/dashboard", verifyToken);
 
