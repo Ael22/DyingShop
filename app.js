@@ -165,10 +165,10 @@ app.get("/cancel", async (req, res) => {
     }
 
     // Retrieve checkout session from session id
-    const session = await stripe.checkout.sessions.retrieve(session_id);
-
-    // Expire the session
-    await stripe.checkout.sessions.expire(session.id);
+    stripe.checkout.sessions.retrieve(session_id).then((session) => {
+      // Expire the session
+      stripe.checkout.sessions.expire(session.id);
+    });
 
     // Finally redirect user to home page
     res.redirect("/");
