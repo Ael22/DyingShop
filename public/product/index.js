@@ -41,13 +41,56 @@ fetch(`/api/product/${productId}`)
     if (!product) {
       window.location.href = "/";
     }
-    document.getElementById("productHeader").innerText = product.name;
-    document.getElementById("productPrice").innerText = `S$${product.price}`;
-    document.getElementById("productImage").src = `..${product.image_url}`;
-    document.getElementById(
-      "productDesc"
-    ).innerHTML += `${product.description}`;
-    document.getElementById("productStock").innerHTML += `${product.stock_qty}`;
+
+    const content = `
+    <div class="row mt-3">
+        <div class="col-1"></div>
+        <div class="col-1">
+          <a class="fs-5" href="/">Back</a>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-1"></div>
+        <div class="col-4 p-0" style="overflow-x: scroll">
+          <img id="productImage" style="height: 40.625em" src="..${product.image_url}" />
+        </div>
+        <div class="col-6 px-4">
+          <div>
+            <h1 id="productHeader">${product.name}</h1>
+            <h4 id="productPrice">S$${product.price}</h4>
+          </div>
+          <div class="mt-5 border-top">
+            <h5 class="mt-3 fw-bold">Product Details</h5>
+            <p id="productCategory">
+              <span class="fw-bold">Category: </span>Loading...
+            </p>
+            <p id="productDesc" style="height: 14.52em; overflow: hidden">
+              <span class="fw-bold">Description: </span>${product.description}
+            </p>
+            <p id="productStock">
+              <span class="fw-bold">Stock: </span>${product.stock_qty}
+            </p>
+            <button id="addToCartBtn" class="btn">Add to cart</button>
+            <p id="feedback" class="mt-3"></p>
+          </div>
+        </div>
+        <div class="col-1"></div>
+      </div>
+    `;
+
+    fetch(`/api/category/${product.category_id}`)
+      .then((response) => response.json())
+      .then((categoryData) => {
+        const { category } = categoryData;
+        document.getElementById("productCategory").innerHTML = `
+        <span class="fw-bold">Category: </span>
+        ${category.name}`;
+      })
+      .catch((err) => {
+        throw err;
+      });
+
+    document.getElementById("content").innerHTML = content;
 
     if (product.stock_qty === 0) {
       document.getElementById("addToCartBtn").disabled = true;
@@ -68,18 +111,6 @@ fetch(`/api/product/${productId}`)
         });
       });
     }
-
-    fetch(`/api/category/${product.category_id}`)
-      .then((response) => response.json())
-      .then((categoryData) => {
-        const { category } = categoryData;
-        document.getElementById(
-          "productCategory"
-        ).innerHTML += `${category.name}`;
-      })
-      .catch((err) => {
-        throw err;
-      });
   })
   .catch((err) => {
     console.error("Error: ", err);
