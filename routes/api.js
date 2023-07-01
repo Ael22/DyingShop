@@ -10,11 +10,13 @@ const loginRoutes = require("./admin/login");
 const categoryRoutes = require("./admin/category");
 const productRoutes = require("./admin/product");
 const checkoutRoutes = require("./checkout");
+const customerRoutes = require("./admin/customer");
 
 // Connect all routes
 router.use("/admin", loginRoutes);
 router.use("/admin", categoryRoutes);
 router.use("/admin", productRoutes);
+router.use("/admin", customerRoutes);
 
 router.use("/checkout", checkoutRoutes);
 
