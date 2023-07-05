@@ -4,7 +4,8 @@ const customer = {
   async getAllCustomers() {
     try {
       const result = await pool.query(
-        `SELECT id, first_name, last_name, email, created_at FROM customers`
+        `SELECT id, first_name, last_name, email, created_at FROM customers`,
+        []
       );
       return result[0];
     } catch (err) {
