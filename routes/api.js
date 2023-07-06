@@ -162,4 +162,28 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!emailRegex.test(email)) {
+      res.status(400).json({ err_msg: "Invalid Email" });
+      return;
+    }
+    if (!password) {
+      res.status(400).json({ err_msg: "Missing Password" });
+      return;
+    }
+    const token = await customerModel.loginCustomer(email, password);
+    res.cookie("token", token, { httpOnly: false }).status(200).json({ token });
+    // res.status(200).json({ success_msg: "Sign in success" });
+  } catch (err) {
+    // Send a 500 response
+    if (err.message === "Invalid Email or Password") {
+      res.status(400).json({ err_msg: err.message });
+      return;
+    }
+    res.status(500).json({ err_msg: "Internal server error" });
+  }
+});
+
 module.exports = router;
