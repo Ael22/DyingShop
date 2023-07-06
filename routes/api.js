@@ -1,5 +1,6 @@
 // Import libraries, router, models and routes
 const express = require("express");
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
@@ -184,6 +185,42 @@ router.post("/login", async (req, res) => {
     }
     res.status(500).json({ err_msg: "Internal server error" });
   }
+});
+
+router.post("/verifyCustomer", (req, res) => {
+  if (!req.headers.cookie) {
+    // cookie does not exist so send user a 403 response
+    res.status(403).json({ err_msg: "Cookie does not exist!" });
+    return;
+  }
+
+  // Retrieve JWT token from cookies
+  const token = req.headers.cookie.replace("token=", "");
+  // Checks if JWT token exists
+  if (!token) {
+    // JWT Token does not exist so send user a 403 response
+    res.status(403).json({ err_msg: "Token does not exist!" });
+    return;
+  }
+
+  // JWT token exists, so verify it
+  // eslint-disable-next-line consistent-return
+  jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
+    // if theres an error verifying the token
+    if (err) {
+      // log the error and redirect user
+      console.log(err);
+      res.status(403).json({ err_msg: "User failed verified" });
+      return;
+    }
+
+    // check if the decoded token contains admin authentication
+    if (!decoded.adminAuth) {
+      // token does not contain admin authentication so its a customer
+      console.log("user is customer");
+      res.status(200).json({ success_msg: "User verified!" });
+    }
+  });
 });
 
 module.exports = router;

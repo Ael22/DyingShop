@@ -1,3 +1,22 @@
+fetch("/api/verifyCustomer", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({}),
+  credentials: "include",
+})
+  .then((response) => response.json())
+  .then((data) => {
+    if (data.success_msg) {
+      window.location.href = "/";
+    }
+  })
+  .catch((error) => {
+    // Handle the error
+    console.log(error);
+  });
+
 const formNotif = document.getElementById("form-notif");
 
 let count = 5;
