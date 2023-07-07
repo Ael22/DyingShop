@@ -57,7 +57,8 @@ document
         if (data.err_msg) {
           throw data.err_msg;
         } else if (data.token) {
-          formNotif.className = "text-success";
+          formNotif.className = "text-success ";
+          document.getElementById("signInBtn").disabled = true;
           redirectCounter();
         }
       })
