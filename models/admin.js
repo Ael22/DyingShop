@@ -65,8 +65,6 @@ const Admin = {
       return callback(err, null);
     }
   },
-
-  // TODO: Delete/Update Admin for CA2
 };
 
 module.exports = Admin;
