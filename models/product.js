@@ -1,5 +1,5 @@
 // Importing libaries and database pool
-const fs = require("fs").promises;
+const cloudinary = require("../config/cloudinary");
 
 const pool = require("../database");
 
@@ -145,24 +145,32 @@ const product = {
       );
       const previousUrl = previousUrlResult[0][0].image_url;
 
-      // Checks if current stored path is using using default image
-      if (previousUrl !== `/uploads/productImages/default.png`) {
-        // Current stored path is using default image so we delete the stored image on the disk
-        await fs.unlink(`${process.cwd() + previousUrl}`);
-        console.log("File deleted");
-        // returm false as no update is ran
-        return false;
+      if (
+        previousUrl !==
+        "https://res.cloudinary.com/daegxvwnd/image/upload/v1688811669/products/default_oesd1j.png"
+      ) {
+        const previousPublicId = previousUrl
+          .split("/")
+          .slice(-2)
+          .join("/")
+          .split(".")[0];
+        cloudinary.api
+          .delete_resources([previousPublicId], {
+            type: "upload",
+            resource_type: "image",
+          })
+          .then(console.log);
       }
 
-      // sends a query to the database to update image path to new path
-      const updateResult = await pool.query(
+      const result = await pool.query(
         `UPDATE products SET image_url = ? WHERE id = ?`,
-        [filePath.slice(1), id]
+        [filePath, id]
       );
+
       console.log("Query executed");
 
       // Checks if any row got updated
-      if (updateResult[0].affectedRows < 1) {
+      if (result[0].affectedRows < 1) {
         // return false as no rows got deleted
         return false;
       }
