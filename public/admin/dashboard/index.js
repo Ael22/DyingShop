@@ -441,9 +441,8 @@ function submitProductCreateForm() {
 const fileInput = document.getElementById("editProductFileInput");
 fileInput.addEventListener("change", (event) => {
   selectedFile = event.target.files[0];
-
+  formData = new FormData();
   formData.append("file", selectedFile);
-  console.log(selectedFile);
 });
 
 function submitProductUpdateForm() {
@@ -468,7 +467,12 @@ function submitProductUpdateForm() {
     },
     body: JSON.stringify(editData),
   })
-    .then((response) => response.json())
+    .then((response) => {
+      document.getElementById(
+        "feedbackModalContent"
+      ).innerHTML = `<i class="fa-solid fa-spinner fa-spin fa-lg" style="color: #000000;"></i>`;
+      return response.json();
+    })
     .then((data) => {
       if (data.success_msg) {
         if (!selectedFile) {
@@ -477,6 +481,7 @@ function submitProductUpdateForm() {
           ).innerText = `${data.success_msg}`;
           return;
         }
+
         fetch(
           `/api/admin/product/${parseInt(
             document.getElementById("editProductIdInput").placeholder,
@@ -487,15 +492,13 @@ function submitProductUpdateForm() {
             body: formData,
           }
         )
-          .then((response) => {
-            if (response.ok) {
-              console.log(response);
-              return response.json();
-            }
-            console.log(response.status);
-            throw new Error(`Failed to upload image`);
-          })
+          .then((response) => response.json())
           .then((imageData) => {
+            if (imageData.error) {
+              throw new Error(
+                `${data.success_msg}\nbut image upload failed due to ${imageData.error}`
+              );
+            }
             document.getElementById(
               "feedbackModalContent"
             ).innerText = `${data.success_msg}\n${imageData.success_msg}`;

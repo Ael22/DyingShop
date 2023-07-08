@@ -12,8 +12,13 @@ fetch("/api/verifyCustomer", {
       document.getElementsByTagName("header")[0].innerHTML =
         "<navbar-customer-component></navbar-customer-component>";
     }
+
     const script = document.createElement("script");
-    script.src = "./scripts/cart.js";
+    if (!window.location.pathname === "/product/") {
+      script.src = "./scripts/cart.js";
+    } else {
+      script.src = "../scripts/cart.js";
+    }
     document.head.appendChild(script);
     // Handle the response data
   })
