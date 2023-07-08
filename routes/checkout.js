@@ -7,7 +7,7 @@ const productModel = require("../models/product");
 const stripeSessionModel = require("../models/stripeSession");
 
 // domain of site
-const DOMAIN = "http://localhost:3000";
+const { DOMAIN } = process.env;
 
 // checkout post endpoint for when user wants to checkout
 router.post("/", async (req, res) => {

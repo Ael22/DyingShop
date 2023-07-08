@@ -593,7 +593,7 @@ document
       .then((response) => {
         const { status } = response;
         if (status === 200) {
-          window.location.href = "http://localhost:3000";
+          window.location.href = "/";
         }
       })
       .catch((err) => {
