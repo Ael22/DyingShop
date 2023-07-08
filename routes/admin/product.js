@@ -1,9 +1,12 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 const express = require("express");
 const { v4: uuidv4 } = require("uuid");
 const multer = require("multer");
 const fs = require("fs").promises;
 const stripe = require("stripe")(process.env.STRIPE_KEY);
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../../config/cloudinary");
 
 const verifyToken = require("../../auth/verifyToken");
 
@@ -11,9 +14,26 @@ const categoryModel = require("../../models/category");
 const productModel = require("../../models/product");
 
 const router = express.Router();
-const upload = multer({
-  limits: {
-    fileSize: "2MB",
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "products",
+    format: async (req, file) => "png", // supports promises as well
+    public_id: (req, file) => uuidv4(),
+  },
+});
+
+const parser = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    const allowedFileTypes = ["png", "jpg", "jpeg"];
+    const fileExt = file.originalname.split(".").pop().toLocaleLowerCase();
+    if (allowedFileTypes.includes(fileExt)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Invalid File Type"));
+    }
   },
 });
 
@@ -106,7 +126,7 @@ router.put("/product", async (req, res) => {
     // get the following data from request body
     const { id, name, description, price, stockQty, categoryId } = req.body;
     // check if the data exists
-    if (!id || !name || !description || !price || !stockQty || !categoryId) {
+    if (!id || !name || !description || !price || stockQty < 0 || !categoryId) {
       // send a 400 response for missing data
       res.status(400).json({
         err_msg:
@@ -191,62 +211,30 @@ router.delete("/product", (req, res) => {
 });
 
 // TODO: A lot of validation...
-router.put("/product/:id/upload", upload.single("file"), (req, res) => {
+router.put("/product/:id/upload", parser.single("file"), (req, res) => {
   try {
-    // check if file and id exists
-    if (!req.file || !req.params.id) {
-      // send a 406 for missing data
-      res.status(406).json({ err_msg: `No file or id found` });
-      return;
-    }
     const { id } = req.params;
-    console.log(req.file);
-
-    // split file name to get file extension
-    const fileExt = req.file.originalname.split(".").pop().replace(/ /g, "");
-
-    console.log("checking file");
-
-    // check if file type is valid
-    if (!["png", "jpg", "jpeg", "PNG"].includes(fileExt)) {
-      // send a 415 response for invalid file
-      res.status(415).send();
+    // Check if file exists
+    if (!req.file) {
+      res.status(400).json({ error: "No file uploaded" });
       return;
     }
-
-    // create new filepath
-    const filepath = `./uploads/productImages/${uuidv4()}.${fileExt}`;
-
-    // write the file into disk
-    fs.writeFile(filepath, req.file.buffer, (err) => {
-      // check if there is an error
-      if (err) {
-        // throw error
-        throw error;
-      }
-    });
-
-    // file writing complete now update the database
+    console.log(req.file);
     productModel
-      .updateProductImage(id, filepath)
+      .updateProductImage(id, req.file.path)
       .then((result) => {
-        // check if update failed
         if (!result) {
-          // send a 500 response for failed upload
-          res.status(500).json({ err_msg: `Image upload failed` });
+          res.status(500).json({ error: `Image upload failed` });
           return;
         }
-        // send a 200 response
         res.status(200).json({ success_msg: `Image upload success` });
       })
       .catch((err) => {
         throw err;
       });
   } catch (err) {
-    // an error got caught log it
-    console.error(err);
-    // send a 500 response
-    res.status(500).json({ err_msg: `Internal server error` });
+    console.log(err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

@@ -52,7 +52,7 @@ fetch(`/api/product/${productId}`)
       <div class="row mt-3">
         <div class="col-1"></div>
         <div class="col-4 p-0" style="overflow-x: scroll">
-          <img id="productImage" style="height: 40.625em" src="..${product.image_url}" />
+          <img id="productImage" style="height: 40.625em" src="${product.image_url}" />
         </div>
         <div class="col-6 px-4">
           <div>
