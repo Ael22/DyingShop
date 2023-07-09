@@ -14,10 +14,15 @@ fetch("/api/verifyCustomer", {
     }
 
     const script = document.createElement("script");
-    if (!window.location.pathname === "/product/") {
-      script.src = "./scripts/cart.js";
-    } else {
+    if (window.location.pathname === "/product/") {
       script.src = "../scripts/cart.js";
+    } else if (
+      window.location.pathname === "/user/settings/" ||
+      window.location.pathname === "/user/orders/"
+    ) {
+      script.src = "../../scripts/cart.js";
+    } else {
+      script.src = "./scripts/cart.js";
     }
     document.head.appendChild(script);
     // Handle the response data

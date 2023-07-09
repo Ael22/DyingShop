@@ -8,6 +8,7 @@ const stripeSessionModel = require("./models/stripeSession");
 const productModel = require("./models/product");
 
 const verifyToken = require("./auth/verifyToken");
+const verifyCustomerToken = require("./auth/verifyCustomerToken");
 
 const apiRouter = require("./routes/api");
 
@@ -113,6 +114,8 @@ app.use(express.json()); // to process JSON in request body
 
 // connecting routes
 app.use("/api", apiRouter);
+
+app.use("/user", verifyCustomerToken);
 
 // Mount verifyToken middleware for admin site
 app.use("/admin/dashboard", verifyToken);

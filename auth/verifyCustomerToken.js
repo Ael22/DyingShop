@@ -38,8 +38,10 @@ const verifyToken = function (req, res, next) {
     // check if the decoded token contains admin authentication
     if (decoded.adminAuth) {
       // token does not contain admin authentication so its a customer
-      console.log("user is customer");
-      res.status(200).json({ success_msg: "User verified!" });
+      console.log("user is admin");
+      res
+        .status(200)
+        .json({ err_msg: "User is admin. Please login as a customer." });
       return;
     }
 
