@@ -24,7 +24,7 @@ document
           loginNotif.textContent = "-";
           loginNotif.className = "text-light";
           // TODO: Send redirect
-          window.location.href("/admin/dashboard");
+          window.location.href = "/admin/dashboard";
         }
       })
       .catch((error) => {
