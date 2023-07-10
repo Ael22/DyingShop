@@ -18,7 +18,7 @@ const customerRoutes = require("./admin/customer");
 const emailRegex = /^\S+@\S+\.\S+$/;
 const passwordRegex =
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-const textRegex = /^[a-zA-Z ]*$/;
+const textRegex = /^[a-zA-Z ]+$/;
 
 // Connect all routes
 router.use("/admin", loginRoutes);
