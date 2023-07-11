@@ -120,7 +120,8 @@ router.delete("/", async (req, res) => {
           }
           res.status(200).json({ success_msg: "Account deleted" });
         })
-        .catch((err) => {
+        .catch((error) => {
+          console.log(error);
           res.status(500).json({ err_msg: "Internal server error" });
         });
     });
