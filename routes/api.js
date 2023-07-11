@@ -211,6 +211,10 @@ router.post("/verifyCustomer", (req, res) => {
   jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
     // if theres an error verifying the token
     if (err) {
+      if (err.name === "TokenExpiredError") {
+        res.status(403).json({ err_msg: "Token expired" });
+        return;
+      }
       // log the error and redirect user
       console.log(err);
       res.status(403).json({ err_msg: "User failed verified" });
