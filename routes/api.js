@@ -12,7 +12,8 @@ const loginRoutes = require("./admin/login");
 const categoryRoutes = require("./admin/category");
 const productRoutes = require("./admin/product");
 const checkoutRoutes = require("./checkout");
-const customerRoutes = require("./admin/customer");
+const customerAdminRoutes = require("./admin/customer");
+const customerRoutes = require("./customer");
 
 // regex
 const emailRegex = /^\S+@\S+\.\S+$/;
@@ -24,7 +25,9 @@ const textRegex = /^[a-zA-Z ]+$/;
 router.use("/admin", loginRoutes);
 router.use("/admin", categoryRoutes);
 router.use("/admin", productRoutes);
-router.use("/admin", customerRoutes);
+router.use("/admin", customerAdminRoutes);
+
+router.use("/user", customerRoutes);
 
 router.use("/checkout", checkoutRoutes);
 
@@ -217,7 +220,6 @@ router.post("/verifyCustomer", (req, res) => {
     // check if the decoded token contains admin authentication
     if (!decoded.adminAuth) {
       // token does not contain admin authentication so its a customer
-      console.log("user is customer");
       res.status(200).json({ success_msg: "User verified!" });
     }
   });
