@@ -13,11 +13,21 @@ fetch("/api/verifyCustomer", {
         "<navbar-customer-component></navbar-customer-component>";
     }
 
+    if (data.err_msg === "Token expired") {
+      document.cookie =
+        "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
+
     const script = document.createElement("script");
-    if (!window.location.pathname === "/product/") {
-      script.src = "./scripts/cart.js";
-    } else {
+    if (window.location.pathname === "/product/") {
       script.src = "../scripts/cart.js";
+    } else if (
+      window.location.pathname === "/user/settings/" ||
+      window.location.pathname === "/user/orders/"
+    ) {
+      script.src = "../../scripts/cart.js";
+    } else {
+      script.src = "./scripts/cart.js";
     }
     document.head.appendChild(script);
     // Handle the response data

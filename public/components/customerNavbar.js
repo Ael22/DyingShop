@@ -32,7 +32,7 @@ class NavbarCustomerComponent extends HTMLElement {
           </button>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="#">Orders</a></li>
-            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><a class="dropdown-item" href="/user/settings">Settings</a></li>
             <li><hr class="dropdown-divider"></li>
 
             <li><a class="dropdown-item text-danger" href="#" onclick="document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';window.location.href = '/' ">Log out</a></li>

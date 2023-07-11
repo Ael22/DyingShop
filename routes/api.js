@@ -12,19 +12,22 @@ const loginRoutes = require("./admin/login");
 const categoryRoutes = require("./admin/category");
 const productRoutes = require("./admin/product");
 const checkoutRoutes = require("./checkout");
-const customerRoutes = require("./admin/customer");
+const customerAdminRoutes = require("./admin/customer");
+const customerRoutes = require("./customer");
 
 // regex
 const emailRegex = /^\S+@\S+\.\S+$/;
 const passwordRegex =
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-const textRegex = /^[a-zA-Z ]*$/;
+const textRegex = /^[a-zA-Z ]+$/;
 
 // Connect all routes
 router.use("/admin", loginRoutes);
 router.use("/admin", categoryRoutes);
 router.use("/admin", productRoutes);
-router.use("/admin", customerRoutes);
+router.use("/admin", customerAdminRoutes);
+
+router.use("/user", customerRoutes);
 
 router.use("/checkout", checkoutRoutes);
 
@@ -208,6 +211,10 @@ router.post("/verifyCustomer", (req, res) => {
   jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
     // if theres an error verifying the token
     if (err) {
+      if (err.name === "TokenExpiredError") {
+        res.status(403).json({ err_msg: "Token expired" });
+        return;
+      }
       // log the error and redirect user
       console.log(err);
       res.status(403).json({ err_msg: "User failed verified" });
@@ -217,7 +224,6 @@ router.post("/verifyCustomer", (req, res) => {
     // check if the decoded token contains admin authentication
     if (!decoded.adminAuth) {
       // token does not contain admin authentication so its a customer
-      console.log("user is customer");
       res.status(200).json({ success_msg: "User verified!" });
     }
   });
