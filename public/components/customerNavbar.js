@@ -31,7 +31,7 @@ class NavbarCustomerComponent extends HTMLElement {
             Profile
           </button>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Orders</a></li>
+            <li><a class="dropdown-item" href="/user/orders">Orders</a></li>
             <li><a class="dropdown-item" href="/user/settings">Settings</a></li>
             <li><hr class="dropdown-divider"></li>
 

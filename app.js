@@ -91,7 +91,8 @@ app.post(
                   .createOrder(
                     paymentIntent.id,
                     JSON.stringify(checkout_items),
-                    customer_id
+                    customer_id,
+                    checkoutSessionCompleted.created
                   )
                   .catch((err) => {
                     throw err;
