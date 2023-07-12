@@ -1,10 +1,11 @@
 const orderModal = new bootstrap.Modal(document.getElementById("orderModal"));
-let items = [];
+const items = [];
 
 document.getElementById("confirmDeleteBtn").addEventListener("click", () => {
   orderModal.hide();
 });
 
+// eslint-disable-next-line no-unused-vars
 function renderOrderModal(orderNum) {
   const order = items[orderNum];
   let tableContent = "";
