@@ -6,6 +6,7 @@ const createHttpError = require("http-errors");
 const stripe = require("stripe")(process.env.STRIPE_KEY);
 const stripeSessionModel = require("./models/stripeSession");
 const productModel = require("./models/product");
+const orderModel = require("./models/order");
 
 const verifyToken = require("./auth/verifyToken");
 const verifyCustomerToken = require("./auth/verifyCustomerToken");
@@ -48,13 +49,19 @@ app.post(
         case "checkout.session.completed": {
           const checkoutSessionCompleted = event.data.object;
 
+          console.log(checkoutSessionCompleted);
+
           // Get cart items from checkout session id from the database
           const cartItems = await stripeSessionModel.getCartItemsBySessionID(
             checkoutSessionCompleted.id
           );
-          // Deconstruct checkout_items array from cartItems
-          const { checkout_items } = cartItems;
 
+          const paymentIntent = await stripe.paymentIntents.retrieve(
+            checkoutSessionCompleted.payment_intent
+          );
+          // Deconstruct checkout_items array from cartItems
+          const { checkout_items, customer_id } = cartItems;
+          console.log(cartItems);
           // Declare empty array to store async functions to be run
           const updatePromises = [];
 
@@ -73,14 +80,35 @@ app.post(
           Promise.all(updatePromises.map((f) => f()))
             .then(() => {
               console.log("Stocks updating complete");
-              stripeSessionModel.deleteSessionBySessionID(
-                checkoutSessionCompleted.id
-              );
+
+              Promise.all([
+                stripeSessionModel
+                  .deleteSessionBySessionID(checkoutSessionCompleted.id)
+                  .catch((err) => {
+                    throw err;
+                  }),
+                orderModel
+                  .createOrder(
+                    paymentIntent.id,
+                    JSON.stringify(checkout_items),
+                    customer_id
+                  )
+                  .catch((err) => {
+                    throw err;
+                  }),
+              ])
+                .then(() => {
+                  console.log("Order placed!");
+                })
+                .catch((error) => {
+                  throw error;
+                });
             })
             .catch((err) => {
               // Throw caught error
               throw err;
             });
+
           break;
         }
         // Handle event where a checkout session status becomes expired
