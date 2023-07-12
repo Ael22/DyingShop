@@ -8,12 +8,12 @@ const stripeSesssion = {
    * @param {JSON} cartItems Cart Items
    * @returns {Boolean} A boolean based on query result
    */
-  async createSession(sessionId, cartItems) {
+  async createSession(sessionId, cartItems, customerId) {
     try {
       // sends a query to the database
       await pool.query(
-        `INSERT INTO stripe_sessions (session_id, checkout_items) VALUES (?, ?)`,
-        [sessionId, cartItems]
+        `INSERT INTO stripe_sessions (session_id, checkout_items, customer_id) VALUES (?, ?, ?)`,
+        [sessionId, cartItems, customerId]
       );
       // returns true if there are no errors
       return true;
@@ -34,7 +34,7 @@ const stripeSesssion = {
     try {
       // sends a query to the database
       const result = await pool.query(
-        `SELECT checkout_items FROM stripe_sessions WHERE session_id = ?`,
+        `SELECT checkout_items, customer_id  FROM stripe_sessions WHERE session_id = ?`,
         [sessionId]
       );
       // returns the results

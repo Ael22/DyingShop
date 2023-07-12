@@ -1,5 +1,6 @@
 const express = require("express");
 const stripe = require("stripe")(process.env.STRIPE_KEY);
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
@@ -14,6 +15,26 @@ router.post("/", async (req, res) => {
   try {
     // Retrieve cart items from reqeust body
     const { cartItems } = req.body;
+    let customerId = null;
+    let token = null;
+
+    if (req.headers.cookie) {
+      token = req.headers.cookie.replace("token=", "");
+    }
+
+    if (token) {
+      jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
+        if (err) {
+          // log the error and redirect user
+          console.log(err);
+          res.status(403).json({ err_msg: "User failed verified" });
+          return;
+        }
+        if (!decoded.adminAuth) {
+          customerId = decoded.id;
+        }
+      });
+    }
 
     // Checks if cart exists
     if (!cartItems) {
@@ -156,7 +177,11 @@ router.post("/", async (req, res) => {
     });
 
     // Record the stripe session id into the database with its cart items after check session has been created
-    stripeSessionModel.createSession(session.id, JSON.stringify(cartItems));
+    stripeSessionModel.createSession(
+      session.id,
+      JSON.stringify(cartItems),
+      customerId
+    );
 
     // send url of stripe checkout session
     res.status(303).json({ url: session.url });

@@ -1,8 +1,9 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const stripe = require("stripe")(process.env.STRIPE_KEY);
 const customerModel = require("../models/customer");
 const verifyToken = require("../auth/verifyCustomerToken");
-const customer = require("../models/customer");
+const orderModel = require("../models/order");
 
 const router = express.Router();
 
@@ -112,13 +113,98 @@ router.delete("/", async (req, res) => {
       }
       const { id } = decoded;
 
-      customer
+      customerModel
         .deleteCustomer(id)
         .then((result) => {
           if (!result) {
             res.status(500).json({ err_msg: "Deletion failed" });
           }
           res.status(200).json({ success_msg: "Account deleted" });
+        })
+        .catch((error) => {
+          console.log(error);
+          res.status(500).json({ err_msg: "Internal server error" });
+        });
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ err_msg: "Internal server error" });
+  }
+});
+
+router.get("/orders", (req, res) => {
+  try {
+    const token = req.headers.cookie.replace("token=", "");
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        throw err;
+      }
+
+      const customerId = decoded.id;
+
+      orderModel
+        .getOrdersByCustomerId(customerId)
+        .then((result) => {
+          if (result.length < 1) {
+            res.status(204).json({ result: "No orders found" });
+            return;
+          }
+          const paymentIntentPromises = [];
+          for (let i = 0; i < result.length; i += 1) {
+            paymentIntentPromises.push(() =>
+              stripe.paymentIntents.retrieve(result[i].stripe_id)
+            );
+          }
+
+          Promise.all(paymentIntentPromises.map((f) => f()))
+            .then((stripePaymentIntentResults) => {
+              const paymentMethodPromises = [];
+              for (let j = 0; j < stripePaymentIntentResults.length; j += 1) {
+                paymentMethodPromises.push(() =>
+                  stripe.paymentMethods.retrieve(
+                    stripePaymentIntentResults[j].payment_method
+                  )
+                );
+              }
+
+              Promise.all(paymentMethodPromises.map((f) => f()))
+                .then((stripePaymentMethodResults) => {
+                  const responseMessage = [];
+                  for (
+                    let k = 0;
+                    k < stripePaymentMethodResults.length;
+                    k += 1
+                  ) {
+                    responseMessage.push({
+                      items: result[k].checkout_items,
+                      payment_method: stripePaymentMethodResults[k].card.brand,
+                      payment_amount: (
+                        stripePaymentIntentResults[k].amount / 100
+                      ).toFixed(2),
+                      currency: stripePaymentIntentResults[k].currency,
+                      date: new Date(result[k].created_at * 1000),
+                    });
+                  }
+                  res.status(200).json({ orders: responseMessage });
+                })
+                .catch((error) => {
+                  throw error;
+                });
+
+              // const responseMessage = [];
+              // for (let j = 0; j < stripeResults.length; j += 1) {
+              //   responseMessage.push({
+              //     items: result[j].checkout_items,
+              //     date: new Date(stripeResults[j].created * 1000),
+              //     paymentMethod: stripeResults[j].
+              //   });
+              // }
+            })
+            .catch((error) => {
+              console.log(error);
+              res.status(500).json({ err_msg: "Error fetching stripe" });
+            });
         })
         .catch((error) => {
           console.log(error);
