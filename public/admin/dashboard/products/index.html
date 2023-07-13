@@ -14,7 +14,7 @@
       integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
       crossorigin="anonymous"
     />
-    <script src="../../components/adminNavbar.js"></script>
+    <script src="../../../components/adminNavbar.js"></script>
 
     <style>
       body {
@@ -31,153 +31,6 @@
   </head>
   <body>
     <navbar-admin-component></navbar-admin-component>
-
-    <!-- Modal form for creating new categories -->
-    <div
-      class="modal fade"
-      id="createCategoryModal"
-      tabindex="-1"
-      aria-labelledby="createCategoryModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="createCategoryModalLabel">
-              Creating new Category
-            </h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="mb-3">
-                <label for="createCategoryNameInput" class="form-label"
-                  >Category Name</label
-                >
-                <input
-                  type="input"
-                  class="form-control"
-                  id="createCategoryNameInput"
-                  value=""
-                />
-              </div>
-              <div class="mb-3">
-                <label for="createCategoryDescInput" class="form-label"
-                  >Category Description</label
-                >
-                <textarea
-                  style="resize: none"
-                  class="form-control"
-                  id="createCategoryDescInput"
-                  rows="3"
-                ></textarea>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              id="createCategoryFormBtn"
-            >
-              Create Category
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal form for editing categories -->
-    <div
-      class="modal fade"
-      id="editCategoryModal"
-      tabindex="-1"
-      aria-labelledby="editCategoryModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="editCategoryModalLabel">
-              Editing Category
-            </h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="mb-3">
-                <label for="editCategoryIdInput" class="form-label"
-                  >Category Id</label
-                >
-                <input
-                  type="input"
-                  class="form-control"
-                  id="editCategoryIdInput"
-                  placeholder=""
-                  disabled
-                />
-                <label for="editCategoryNameInput" class="form-label"
-                  >Category Name</label
-                >
-                <input
-                  type="input"
-                  class="form-control"
-                  id="editCategoryNameInput"
-                  value=""
-                />
-              </div>
-              <div class="mb-3">
-                <label for="editCategoryDescInput" class="form-label"
-                  >Category Description</label
-                >
-                <textarea
-                  style="resize: none"
-                  class="form-control"
-                  id="editCategoryDescInput"
-                  rows="3"
-                ></textarea>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button type="button" class="btn btn-danger" id="deleteCategoryBtn">
-              Delete
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              id="updateCategoryBtn"
-            >
-              Save changes
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- Modal alert for confirmation on delete request -->
     <div
@@ -487,6 +340,5 @@
       crossorigin="anonymous"
     ></script>
     <script defer src="./index.js" type="text/javascript"></script>
-    <script defer src="../scripts/logout.js" type="text/javascript"></script>
   </body>
 </html>

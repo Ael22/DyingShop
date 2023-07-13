@@ -41,11 +41,18 @@ fetch("/api/user/orders", { method: "GET", credentials: "include" })
     const { orders } = data;
     console.log(orders);
 
+    if (orders.length < 1) {
+      document.getElementById("mainDiv").innerHTML =
+        "Such empty. Looks like you have to yet to place any orders :(";
+      return;
+    }
+
     let tableContent = "";
 
     for (let i = 0; i < orders.length; i += 1) {
       let moreItems = "";
       let cc = "";
+      let refund = "";
       items.push(orders[i].items);
       if (orders[i].items.length > 1) {
         moreItems = `<p style="font-size: .7em">+ ${orders[i].items.length} items</p>`;
@@ -58,12 +65,15 @@ fetch("/api/user/orders", { method: "GET", credentials: "include" })
       } else {
         cc = orders[i].payment_method;
       }
+      if (orders[i].refund) {
+        refund = `<span class="badge text-bg-warning ms-3">Refunded</span>`;
+      }
       tableContent += `
         <tr class="clickable" onclick="renderOrderModal(${i})">
           <th scope="row">${i + 1}</th>
           <td class="fs-5">
             <p class="h5">
-            ${orders[i].items[0].name}
+            ${orders[i].items[0].name}${refund}
             </p>
             ${moreItems}
           </td>

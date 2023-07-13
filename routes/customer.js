@@ -147,7 +147,7 @@ router.get("/orders", (req, res) => {
         .getOrdersByCustomerId(customerId)
         .then((result) => {
           if (result.length < 1) {
-            res.status(204).json({ result: "No orders found" });
+            res.status(200).json({ orders: [] });
             return;
           }
           const paymentIntentPromises = [];
@@ -184,6 +184,7 @@ router.get("/orders", (req, res) => {
                       ).toFixed(2),
                       currency: stripePaymentIntentResults[k].currency,
                       date: new Date(result[k].created_at * 1000),
+                      refund: !!result[k].refund,
                     });
                   }
                   res.status(200).json({ orders: responseMessage });

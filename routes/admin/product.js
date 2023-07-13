@@ -76,7 +76,15 @@ router.post("/product", (req, res) => {
   const { name, description, price, stockQty, categoryId } = req.body;
 
   // check if the retrieved data exists
-  if (!name || !description || !price || !stockQty || !categoryId) {
+  if (
+    !name ||
+    !description ||
+    !price ||
+    !stockQty ||
+    !categoryId ||
+    price < 0 ||
+    stockQty < 0
+  ) {
     // send a 400 response for missing data
     res.status(400).json({
       err_msg:
@@ -126,7 +134,15 @@ router.put("/product", async (req, res) => {
     // get the following data from request body
     const { id, name, description, price, stockQty, categoryId } = req.body;
     // check if the data exists
-    if (!id || !name || !description || !price || stockQty < 0 || !categoryId) {
+    if (
+      !id ||
+      !name ||
+      !description ||
+      !price ||
+      stockQty < 0 ||
+      !categoryId ||
+      price < 0
+    ) {
       // send a 400 response for missing data
       res.status(400).json({
         err_msg:
