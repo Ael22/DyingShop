@@ -13,6 +13,7 @@ const categoryRoutes = require("./admin/category");
 const productRoutes = require("./admin/product");
 const checkoutRoutes = require("./checkout");
 const customerAdminRoutes = require("./admin/customer");
+const orderAdminRoutes = require("./admin/order");
 const customerRoutes = require("./customer");
 
 // regex
@@ -26,6 +27,7 @@ router.use("/admin", loginRoutes);
 router.use("/admin", categoryRoutes);
 router.use("/admin", productRoutes);
 router.use("/admin", customerAdminRoutes);
+router.use("/admin", orderAdminRoutes);
 
 router.use("/user", customerRoutes);
 
