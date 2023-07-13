@@ -45,8 +45,8 @@ class AdminComponent extends HTMLElement {
             </a>
           </li>
           <li class="nav-item mb-1">
-            <a href="/admin/dashboard/transaction" class="nav-link text-white" id="transaction-btn">
-              Transactions
+            <a href="/admin/dashboard/orders" class="nav-link text-white" id="order-btn">
+              Orders
             </a>
           </li>
         </ul>
