@@ -26,6 +26,10 @@ function dashboardUiBtnUpdate(element) {
   }
 }
 
+/**
+ * Renders the product forms category dropdown
+ * @param {*} selectMenuId
+ */
 function renderProductFormCategoryMenu(selectMenuId) {
   fetch("/api/category")
     .then((response) => response.json())
@@ -606,7 +610,7 @@ document
 
 // event listener for when the admin dashboard's home button is clicked
 document.getElementById("home-btn").addEventListener("click", function (event) {
-  event.preventDefault();
+  // event.preventDefault();
 
   dashboardUiBtnUpdate(document.getElementById("home-btn"));
 
@@ -617,7 +621,7 @@ document.getElementById("home-btn").addEventListener("click", function (event) {
 document
   .getElementById("category-btn")
   .addEventListener("click", function (event) {
-    event.preventDefault();
+    // event.preventDefault();
 
     clearEditProductForm();
     dashboardUiBtnUpdate(document.getElementById("category-btn"));
@@ -657,7 +661,7 @@ document
 document
   .getElementById("product-btn")
   .addEventListener("click", function (event) {
-    event.preventDefault();
+    // event.preventDefault();
 
     clearEditCategoryForm();
     dashboardUiBtnUpdate(document.getElementById("product-btn"));
@@ -736,7 +740,7 @@ function loadCustomerPage() {
 document
   .getElementById("customer-btn")
   .addEventListener("click", function (event) {
-    event.preventDefault();
+    // event.preventDefault();
 
     dashboardUiBtnUpdate(document.getElementById("customer-btn"));
     loadCustomerPage();
@@ -745,7 +749,7 @@ document
 document
   .getElementById("transaction-btn")
   .addEventListener("click", function (event) {
-    event.preventDefault();
+    // event.preventDefault();
 
     // dashboardUiBtnUpdate(document.getElementById("transaction-btn"));
     alert("Feature under construction");
