@@ -147,7 +147,7 @@ router.get("/orders", (req, res) => {
         .getOrdersByCustomerId(customerId)
         .then((result) => {
           if (result.length < 1) {
-            res.status(204).json({ result: "No orders found" });
+            res.status(200).json({ orders: [] });
             return;
           }
           const paymentIntentPromises = [];

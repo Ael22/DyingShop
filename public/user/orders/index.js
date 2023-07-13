@@ -41,6 +41,12 @@ fetch("/api/user/orders", { method: "GET", credentials: "include" })
     const { orders } = data;
     console.log(orders);
 
+    if (orders.length < 1) {
+      document.getElementById("mainDiv").innerHTML =
+        "Such empty. Looks like you have to yet to place any orders :(";
+      return;
+    }
+
     let tableContent = "";
 
     for (let i = 0; i < orders.length; i += 1) {
