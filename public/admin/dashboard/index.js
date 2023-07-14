@@ -1,32 +1,93 @@
-/* eslint-disable camelcase */
-function loadDashboardHome() {
+/* eslint-disable no-new */
+function loadPage() {
   document.getElementById("content-div").innerHTML = `
-  <div class="d-flex justify-content-center">
-  <div
-    class="spinner-border"
-    style="width: 3.6rem; height: 3.6rem"
-    role="status"
-  >
-    <span class="sr-only">Loading...</span>
+  <div class="row">
+    <div class="col p-2">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title placeholder-glow">
+            <span class="placeholder col-6"></span>
+          </h4>
+          <h5 class="card-title placeholder-glow">
+            <span class="placeholder col-12"></span>
+          </h5>
+        </div>
+      </div>
+    </div>
+
+    <div class="col p-2">
+      <div class="card">
+        <div class="card-body">
+        <h4 class="card-title placeholder-glow">
+          <span class="placeholder col-6"></span>
+        </h4>
+        <h5 class="card-title placeholder-glow">
+          <span class="placeholder col-12"></span>
+        </h5>
+        </div>
+      </div>
+    </div>
+
+    <div class="col p-2">
+      <div class="card">
+        <div class="card-body">
+        <h4 class="card-title placeholder-glow">
+          <span class="placeholder col-6"></span>
+        </h4>
+        <h5 class="card-title placeholder-glow">
+          <span class="placeholder col-12"></span>
+        </h5>
+        </div>
+      </div>
+    </div>
+
+    <div class="col p-2">
+      <div class="card">
+        <div class="card-body">
+        <h4 class="card-title placeholder-glow">
+          <span class="placeholder col-6"></span>
+        </h4>
+        <h5 class="card-title placeholder-glow">
+          <span class="placeholder col-12"></span>
+        </h5>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+
+
+  
+      <div class="chart-container" style="position: relative; height:40vh; width:60vw">
+        <canvas id="myChart"></canvas>
+      </div>
+    
+  
   `;
 
-  fetch("/api/admin/product/payment")
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      const homeContent = `
-        <h1>Total Sales: SGD${data.Total_Sales}</h1>
-        <h2>Average Sale: SGD${(
-          data.Total_Sales / data.Number_of_Sales
-        ).toFixed(2)}</h2>
-        <p>Popular products: 🚧🚧🚧</p>
-        <p>Chart.js feafute for ReactJS + chartJS</p>
-      `;
+  const ctx = document.getElementById("myChart");
 
-      document.getElementById("content-div").innerHTML = homeContent;
-    });
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+      datasets: [
+        {
+          label: "# of Votes",
+          data: [12, 19, 3, 5, 2, 3],
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
 }
 
-loadDashboardHome();
+loadPage();
