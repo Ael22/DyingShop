@@ -57,9 +57,9 @@ function loadPage() {
 
 
   
-      <div class="chart-container" style="position: relative; height:40vh; width:60vw">
-        <canvas id="myChart"></canvas>
-      </div>
+    <div class="chart-container">
+      <canvas id="myChart"></canvas>
+    </div>
     
   
   `;
@@ -67,14 +67,16 @@ function loadPage() {
   const ctx = document.getElementById("myChart");
 
   new Chart(ctx, {
-    type: "bar",
+    type: "line",
     data: {
-      labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+      labels: [1, 2, 3, 4, 5, 6, 7],
       datasets: [
         {
-          label: "# of Votes",
-          data: [12, 19, 3, 5, 2, 3],
-          borderWidth: 1,
+          label: "My First Dataset",
+          data: [65, 59, 80, 81, 56, 55, 40],
+          fill: false,
+          borderColor: "rgb(75, 192, 192)",
+          tension: 0.1,
         },
       ],
     },
@@ -87,6 +89,13 @@ function loadPage() {
         },
       },
     },
+  });
+
+  window.addEventListener("beforeprint", () => {
+    ctx.resize(600, 600);
+  });
+  window.addEventListener("afterprint", () => {
+    ctx.resize();
   });
 }
 
