@@ -15,6 +15,7 @@ const checkoutRoutes = require("./checkout");
 const customerAdminRoutes = require("./admin/customer");
 const orderAdminRoutes = require("./admin/order");
 const customerRoutes = require("./customer");
+const statisticRoutes = require("./admin/statistics");
 
 // regex
 const emailRegex = /^\S+@\S+\.\S+$/;
@@ -28,6 +29,7 @@ router.use("/admin", categoryRoutes);
 router.use("/admin", productRoutes);
 router.use("/admin", customerAdminRoutes);
 router.use("/admin", orderAdminRoutes);
+router.use("/admin", statisticRoutes);
 
 router.use("/user", customerRoutes);
 
