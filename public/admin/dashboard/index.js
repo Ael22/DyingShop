@@ -1,4 +1,6 @@
 /* eslint-disable no-new */
+let dashboardChart;
+
 function loadPage() {
   document.getElementById("home-btn").className = `nav-link active`;
   document.getElementById("content-div").innerHTML = `
@@ -67,7 +69,7 @@ function loadPage() {
 
   const ctx = document.getElementById("myChart");
 
-  new Chart(ctx, {
+  dashboardChart = new Chart(ctx, {
     type: "line",
     data: {
       labels: [1, 2, 3, 4, 5, 6, 7],
@@ -91,13 +93,6 @@ function loadPage() {
       },
     },
   });
-
-  window.addEventListener("beforeprint", () => {
-    ctx.resize(600, 600);
-  });
-  window.addEventListener("afterprint", () => {
-    ctx.resize();
-  });
 }
 
 fetch("/api/admin/statistic/totalsale")
@@ -107,5 +102,23 @@ fetch("/api/admin/statistic/totalsale")
       "totalsale"
     ).innerHTML = `<h4>Net Volume:</h4><h5>SGD${data.netVolume}</h5>`;
   });
+
+fetch("/api/admin/statistic/graph")
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+    dashboardChart.data.labels = data.graph_months;
+    dashboardChart.data.datasets[0].data = data.graph_data;
+
+    dashboardChart.update();
+
+    window.addEventListener("beforeprint", () => {
+      ctx.resize(600, 600);
+    });
+    window.addEventListener("afterprint", () => {
+      ctx.resize();
+    });
+  })
+  .catch((err) => {});
 
 loadPage();
