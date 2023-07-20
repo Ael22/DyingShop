@@ -23,6 +23,38 @@ const product = {
     }
   },
 
+  async getMostSoldProduct() {
+    try {
+      const result = await pool.query(
+        `SELECT id, sold FROM products order BY sold DESC`,
+        []
+      );
+      console.log("Query executed ");
+      return result[0][0];
+    } catch (err) {
+      // An error got caught, log it
+      console.error("Error executing the SQL Statement: ", err);
+      // Throw error to be caught
+      throw err;
+    }
+  },
+
+  async getMostSoldCategory() {
+    try {
+      const result = await pool.query(
+        `SELECT category_id, SUM(sold) AS "sold" FROM products GROUP BY category_id ORDER BY SUM(sold) DESC`,
+        []
+      );
+      console.log("Query executed ");
+      return result[0][0];
+    } catch (err) {
+      // An error got caught, log it
+      console.error("Error executing the SQL Statement: ", err);
+      // Throw error to be caught
+      throw err;
+    }
+  },
+
   /**
    * Function to get a product by searching with an id in the database
    * @param {Number} id Product's id
@@ -194,8 +226,8 @@ const product = {
     try {
       // sends a query to the database
       const result = await pool.query(
-        `UPDATE products SET stock_qty = stock_qty - ? WHERE id = ?`,
-        [qty, id]
+        `UPDATE products SET stock_qty = stock_qty - ?, sold = sold + ?  WHERE id = ?`,
+        [qty, qty, id]
       );
       // Checks if any row got deleted
       if (result[0].affectedRows < 1) {
