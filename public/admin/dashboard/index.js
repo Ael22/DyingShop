@@ -17,7 +17,6 @@ function loadData() {
       const popularData = data[1];
       const graphData = data[2];
 
-      console.log(popularData);
       document.getElementById(
         "totalSale"
       ).innerHTML = `<h4>Net Volume:</h4><h5>SGD${saleData.net_volume}</h5>`;
