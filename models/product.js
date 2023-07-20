@@ -42,7 +42,7 @@ const product = {
   async getMostSoldCategory() {
     try {
       const result = await pool.query(
-        `SELECT category_id, SUM(sold) AS "Products sold" FROM products GROUP BY category_id ORDER BY SUM(sold) DESC`,
+        `SELECT category_id, SUM(sold) AS "sold" FROM products GROUP BY category_id ORDER BY SUM(sold) DESC`,
         []
       );
       console.log("Query executed ");

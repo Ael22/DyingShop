@@ -51,7 +51,7 @@ router.get("/statistic/totalsale", async (req, res) => {
 
     const netVolume = totalGrossSales + totalRefunds - totalFees;
 
-    res.status(200).json({ netVolume, "Number of sales": saleCount });
+    res.status(200).json({ net_volume: netVolume, number_of_sales: saleCount });
   } catch (err) {
     console.error(err);
     res.status(500).json({ err_msg: "Internal server error" });
@@ -66,8 +66,8 @@ router.get("/statistic/popular", async (req, res) => {
     ])
       .then((result) => {
         res.status(200).json({
-          "Most popular product": result[0],
-          "Most popular category": result[1],
+          most_popular_product: result[0],
+          most_popular_category: result[1],
         });
       })
       .catch((error) => {

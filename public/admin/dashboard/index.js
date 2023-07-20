@@ -1,13 +1,61 @@
 /* eslint-disable no-new */
 let dashboardChart;
 
+function loadData() {
+  const urls = [
+    "/api/admin/statistic/totalsale",
+    "/api/admin/statistic/popular",
+    "/api/admin/statistic/graph",
+  ];
+  const promises = urls.map((url) =>
+    fetch(url).then((response) => response.json())
+  );
+
+  Promise.all(promises)
+    .then((data) => {
+      const saleData = data[0];
+      const popularData = data[1];
+      const graphData = data[2];
+
+      console.log(popularData);
+      document.getElementById(
+        "totalSale"
+      ).innerHTML = `<h4>Net Volume:</h4><h5>SGD${saleData.net_volume}</h5>`;
+      document.getElementById(
+        "numSale"
+      ).innerHTML = `<h4>Number of sales:</h4><h5>${saleData.number_of_sales}</h5>`;
+      document.getElementById(
+        "popularProduct"
+      ).innerHTML = `<h4>Most Popular Product:</h4><h5>Product ID: ${popularData.most_popular_product.id} <small class="ms-3">sold ${popularData.most_popular_product.sold}</small></h5>`;
+      document.getElementById(
+        "popularCategory"
+      ).innerHTML = `<h4>Most Popular Category:</h4><h5>Category ID: ${popularData.most_popular_category.category_id} <small class="ms-3">sold ${popularData.most_popular_category.sold}</small></h5>`;
+      dashboardChart.options.plugins.title.text = "Net Volume over Months";
+      dashboardChart.data.labels = graphData.graph_months;
+      dashboardChart.data.datasets[0].data = graphData.graph_data;
+
+      dashboardChart.update();
+    })
+    .catch((err) => {
+      console.error(err);
+      document.getElementById("alert-container").className =
+        "alert alert-danger";
+      document.getElementById("alert-container").role = "alert";
+      document.getElementById(
+        "alert-container"
+      ).innerHTML = `An error occured while fetching the data`;
+    });
+}
+
 function loadPage() {
   document.getElementById("home-btn").className = `nav-link active`;
   document.getElementById("content-div").innerHTML = `
   <div class="row">
+  <div id="alert-container">
+  </div>
     <div class="col p-2">
       <div class="card">
-        <div id="totalsale" class="card-body">
+        <div id="totalSale" class="card-body">
           <h4 class="card-title placeholder-glow">
             <span class="placeholder col-6"></span>
           </h4>
@@ -20,7 +68,7 @@ function loadPage() {
 
     <div class="col p-2">
       <div class="card">
-        <div class="card-body">
+        <div id="numSale" class="card-body">
         <h4 class="card-title placeholder-glow">
           <span class="placeholder col-6"></span>
         </h4>
@@ -33,7 +81,7 @@ function loadPage() {
 
     <div class="col p-2">
       <div class="card">
-        <div class="card-body">
+        <div id="popularProduct" class="card-body">
         <h4 class="card-title placeholder-glow">
           <span class="placeholder col-6"></span>
         </h4>
@@ -46,7 +94,7 @@ function loadPage() {
 
     <div class="col p-2">
       <div class="card">
-        <div class="card-body">
+        <div id="popularCategory" class="card-body">
         <h4 class="card-title placeholder-glow">
           <span class="placeholder col-6"></span>
         </h4>
@@ -60,7 +108,7 @@ function loadPage() {
 
 
   
-    <div class="chart-container">
+    <div class="chart-container" style="position: relative; height:70vh; width:80vw">
       <canvas id="myChart"></canvas>
     </div>
     
@@ -68,57 +116,46 @@ function loadPage() {
   `;
 
   const ctx = document.getElementById("myChart");
-
+  ctx.style.backgroundColor = "#dee2e6";
   dashboardChart = new Chart(ctx, {
     type: "line",
     data: {
       labels: [1, 2, 3, 4, 5, 6, 7],
       datasets: [
         {
-          label: "My First Dataset",
+          label: "Net Volume",
           data: [0, 0, 0, 0, 0, 0, 0],
-          fill: false,
+          fill: true,
           borderColor: "rgb(75, 192, 192)",
-          tension: 0.1,
+          borderWidth: 3,
+          tension: 0,
         },
       ],
     },
     options: {
+      layout: {
+        padding: 30,
+      },
       responsive: true,
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
       scales: {
         y: {
           beginAtZero: true,
         },
       },
+      plugins: {
+        title: {
+          fullSize: true,
+          display: true,
+          text: "Loading...",
+          font: {
+            size: 30,
+          },
+        },
+      },
     },
   });
+  loadData();
 }
-
-fetch("/api/admin/statistic/totalsale")
-  .then((response) => response.json())
-  .then((data) => {
-    document.getElementById(
-      "totalsale"
-    ).innerHTML = `<h4>Net Volume:</h4><h5>SGD${data.netVolume}</h5>`;
-  });
-
-fetch("/api/admin/statistic/graph")
-  .then((response) => response.json())
-  .then((data) => {
-    console.log(data);
-    dashboardChart.data.labels = data.graph_months;
-    dashboardChart.data.datasets[0].data = data.graph_data;
-
-    dashboardChart.update();
-
-    window.addEventListener("beforeprint", () => {
-      ctx.resize(600, 600);
-    });
-    window.addEventListener("afterprint", () => {
-      ctx.resize();
-    });
-  })
-  .catch((err) => {});
 
 loadPage();
