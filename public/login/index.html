@@ -3,6 +3,7 @@
   <head>
     <title>Admin Login Page</title>
     <script src="./index.js" type="text/javascript" defer></script>
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -13,6 +14,9 @@
       integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
       crossorigin="anonymous"
     />
+    <script src="../components/customerNavbar.js"></script>
+    <script src="../components/navbar.js"></script>
+    <script src="../scripts/renderNav.js"></script>
   </head>
   <style>
     .tooltip-inner {
@@ -21,44 +25,9 @@
   </style>
   <!-- Customer Login Page -->
   <body>
-    <nav
-      class="position-absolute navbar navbar-expand-lg bg-dark p-3 w-100"
-      data-bs-theme="dark"
-    >
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">Dying shop</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
-          <button
-            id=""
-            class="btn btn-outline-primary mx-3"
-            type="submit"
-            onclick="window.location.href='/signup'"
-          >
-            Sign up
-          </button>
-          <button
-            id=""
-            class="btn btn-outline-primary"
-            type="submit"
-            onclick="window.location.href='/login'"
-          >
-            Sign in
-          </button>
-        </div>
-      </div>
-    </nav>
+    <header>
+      <navbar-component></navbar-component>
+    </header>
     <div class="d-flex justify-content-center align-items-center vh-100">
       <div class="container">
         <div class="row justify-content-center">
@@ -85,7 +54,10 @@
                     />
                     <label for="passwordInput">Password</label>
                   </div>
-                  <div class="mt-2 mb-3">
+                  <div class="mt-2 ms-2 mb-3">
+                    <a href="/reset">forgot password?</a>
+                  </div>
+                  <div class="mt-2 ms-2 mb-3">
                     <p id="form-notif" class="text-light">-</p>
                   </div>
                   <div class="d-grid">
@@ -100,6 +72,43 @@
                 </form>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="shoppingCartModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="shoppingCartModalLabel">
+              Your Shopping Cart
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div id="cartModalBody" class="modal-body"></div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" id="checkoutBtn" class="btn btn-success">
+              Check out
+            </button>
           </div>
         </div>
       </div>
