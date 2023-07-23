@@ -32,7 +32,7 @@ const verifyToken = function (req, res, next) {
     if (err) {
       // log the error and redirect user
       console.log(err);
-      res.status(403).json({ err_msg: "User failed verified" });
+      res.status(403).json({ err_msg: "User failed to verify" });
       return;
     }
     // check if the decoded token contains admin authentication
