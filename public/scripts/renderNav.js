@@ -22,7 +22,8 @@ fetch("/api/verifyCustomer", {
     if (
       window.location.pathname === "/product/" ||
       window.location.pathname === "/login/" ||
-      window.location.pathname === "/signup/"
+      window.location.pathname === "/signup/" ||
+      window.location.pathname === "/reset/"
     ) {
       script.src = "../scripts/cart.js";
     } else if (

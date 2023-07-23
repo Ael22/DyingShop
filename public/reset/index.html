@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Customer Sign up Page</title>
+    <script src="./index.js" type="text/javascript" defer></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+      crossorigin="anonymous"
+    />
+    <script src="../components/customerNavbar.js"></script>
+    <script src="../components/navbar.js"></script>
+    <script src="../scripts/renderNav.js"></script>
+  </head>
+  <style>
+    .tooltip-inner {
+      text-align: left;
+    }
+  </style>
+  <!-- Customer signup Page -->
+  <body>
+    <header>
+      <navbar-component></navbar-component>
+    </header>
+    <div
+      class="d-flex justify-content-center align-items-center"
+      style="height: 90vh"
+    >
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h2 class="card-title text-center">Reset Password</h2>
+                <form id="resetForm" class="mt-4">
+                  <div class="form-floating mb-3">
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="emailInput"
+                      placeholder="name@example.com"
+                    />
+                    <label for="emailInput">Email address</label>
+                  </div>
+                  <div class="mt-2 mb-3">
+                    <p id="form-notif" class="text-light">-</p>
+                  </div>
+                  <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">
+                      Reset Password
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="shoppingCartModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="shoppingCartModalLabel">
+              Your Shopping Cart
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div id="cartModalBody" class="modal-body"></div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" id="checkoutBtn" class="btn btn-success">
+              Check out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
