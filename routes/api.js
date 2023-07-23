@@ -1,6 +1,9 @@
 // Import libraries, router, models and routes
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const nodemailerSendgrid = require("nodemailer-sendgrid");
+const UAParser = require("ua-parser-js");
 
 const router = express.Router();
 
@@ -16,6 +19,23 @@ const customerAdminRoutes = require("./admin/customer");
 const orderAdminRoutes = require("./admin/order");
 const customerRoutes = require("./customer");
 const statisticRoutes = require("./admin/statistics");
+
+// nodemailer transport
+const transport = nodemailer.createTransport(
+  // * FOR PRODUCTION
+  // nodemailerSendgrid({
+  //   apiKey: process.env.SENDGRID_API_KEY,
+  // }),
+  {
+    // ! USE MAILTRAP FOR TESTING
+    host: "sandbox.smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: process.env.MAILTRAP_USER,
+      pass: process.env.MAILTRAP_PASSWORD,
+    },
+  }
+);
 
 // regex
 const emailRegex = /^\S+@\S+\.\S+$/;
@@ -231,6 +251,40 @@ router.post("/verifyCustomer", (req, res) => {
       res.status(200).json({ success_msg: "User verified!" });
     }
   });
+});
+
+router.get("/verifyemail/:token", (req, res) => {
+  try {
+    const { token } = req.params;
+    console.log(token);
+    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+      if (err) {
+        console.log(err);
+        if (err.name === "TokenExpiredError") {
+          res.status(400).send("Token expired");
+        } else if (
+          err.name === "JsonWebTokenError" ||
+          err.name === "NotBeforeError"
+        ) {
+          res.status(400).send("Invalid token.");
+        } else {
+          res.status(400).send("Error verifying token:", err.message);
+        }
+      } else {
+        console.log(`Verify token decoded for user with id ${decodedToken.id}`);
+        customerModel.verifyEmail(token, decodedToken.id).then((result) => {
+          if (!result) {
+            res.status(400).send("Token not found");
+            return;
+          }
+          res.status(200).send("user verified!");
+        });
+      }
+    });
+  } catch (error) {
+    console.log(err);
+    res.status(500).send("Internal server error");
+  }
 });
 
 module.exports = router;
