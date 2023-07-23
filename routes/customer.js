@@ -59,7 +59,7 @@ router.put("/", async (req, res) => {
 
     // JWT token exists, so verify it
     // eslint-disable-next-line consistent-return
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
       if (err) {
         throw err;
       }
@@ -126,7 +126,7 @@ router.delete("/", async (req, res) => {
   try {
     const token = req.headers.cookie.replace("token=", "");
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
       if (err) {
         throw err;
       }
@@ -155,7 +155,7 @@ router.get("/orders", (req, res) => {
   try {
     const token = req.headers.cookie.replace("token=", "");
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
       if (err) {
         throw err;
       }
@@ -211,15 +211,6 @@ router.get("/orders", (req, res) => {
                 .catch((error) => {
                   throw error;
                 });
-
-              // const responseMessage = [];
-              // for (let j = 0; j < stripeResults.length; j += 1) {
-              //   responseMessage.push({
-              //     items: result[j].checkout_items,
-              //     date: new Date(stripeResults[j].created * 1000),
-              //     paymentMethod: stripeResults[j].
-              //   });
-              // }
             })
             .catch((error) => {
               console.log(error);
