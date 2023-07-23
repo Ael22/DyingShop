@@ -44,7 +44,8 @@ router.get("/", (req, res) => {
           res.status(200).json({ user: result });
         })
         .catch((error) => {
-          throw error;
+          console.log(error);
+          res.status(500).json({ err_msg: "Internal server error" });
         });
     });
   } catch (err) {
