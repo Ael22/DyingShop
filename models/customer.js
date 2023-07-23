@@ -152,7 +152,7 @@ const customer = {
         [id]
       );
 
-      return result;
+      return result[0].verified;
     } catch (err) {
       // An error got caught log it
       console.error("Error executing the SQL Statement: ", err);
