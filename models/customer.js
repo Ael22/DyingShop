@@ -174,7 +174,7 @@ const customer = {
       );
       console.log("Query Executed");
       // Checks if any row got deleted
-      if (result.affectedRows < 1) {
+      if (result[0].affectedRows < 1) {
         // return false if no rows got deleted
         return false;
       }
@@ -194,6 +194,75 @@ const customer = {
         `UPDATE customers SET verified = ?, verify_token = ? WHERE verify_token = ? AND id = ? `,
         [1, null, token, id]
       );
+      if (result[0].affectedRows < 1) {
+        // return false if no rows got updated
+        return false;
+      }
+      // Passed all checks so return true
+      return true;
+    } catch (err) {
+      // An error got caught log it
+      console.error("Error executing the SQL Statement: ", err);
+      // Throw error to be caught
+      throw err;
+    }
+  },
+
+  async getCustomerByEmail(email) {
+    try {
+      const result = await pool.query(
+        "SELECT id, email FROM customers WHERE email = ? AND verified = 1",
+        [email]
+      );
+      if (result[0].length < 1) {
+        return false;
+      }
+      console.log(result[0]);
+      return result[0][0];
+    } catch (err) {
+      // An error got caught log it
+      console.error("Error executing the SQL Statement: ", err);
+      // Throw error to be caught
+      throw err;
+    }
+  },
+
+  async updateResetToken(email, id) {
+    try {
+      const token = jwt.sign({ id, email }, process.env.JWT_SECRET, {
+        expiresIn: 86400,
+      });
+
+      // sends a query to the database
+      const result = await pool.query(
+        `UPDATE customers SET reset_token = ? WHERE email = ? AND id = ?`,
+        [token, email, id]
+      );
+      console.log("Query Executed");
+      // Checks if any row got deleted
+      if (result[0].affectedRows < 1) {
+        // return false if no rows got deleted
+        return false;
+      }
+      // Passed all checks so return true
+      return token;
+    } catch (err) {
+      // An error got caught log it
+      console.error("Error executing the SQL Statement: ", err);
+      // Throw error to be caught
+      throw err;
+    }
+  },
+
+  async changePassword(password, token, id) {
+    try {
+      const hash = await bcryptUtils.hashPassword(password);
+
+      const result = await pool.query(
+        `UPDATE customers SET password = ?, reset_token = ? WHERE reset_token = ? AND id = ?`,
+        [hash, null, token, id]
+      );
+      console.log(result);
       if (result[0].affectedRows < 1) {
         // return false if no rows got deleted
         return false;

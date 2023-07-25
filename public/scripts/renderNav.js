@@ -28,7 +28,8 @@ fetch("/api/verifyCustomer", {
       script.src = "../scripts/cart.js";
     } else if (
       window.location.pathname === "/user/settings/" ||
-      window.location.pathname === "/user/orders/"
+      window.location.pathname === "/user/orders/" ||
+      window.location.pathname === "/reset/token/"
     ) {
       script.src = "../../scripts/cart.js";
     } else {

@@ -13,9 +13,9 @@
       integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
       crossorigin="anonymous"
     />
-    <script src="../components/customerNavbar.js"></script>
-    <script src="../components/navbar.js"></script>
-    <script src="../scripts/renderNav.js"></script>
+    <script src="../../components/customerNavbar.js"></script>
+    <script src="../../components/navbar.js"></script>
+    <script src="../../scripts/renderNav.js"></script>
   </head>
   <style>
     .tooltip-inner {
@@ -38,14 +38,35 @@
               <div class="card-body">
                 <h2 class="card-title text-center">Reset Password</h2>
                 <form id="resetForm" class="mt-4">
-                  <div class="form-floating mb-3">
+                  <div class="form-floating">
                     <input
-                      type="email"
+                      type="password"
                       class="form-control"
-                      id="emailInput"
+                      id="newPasswordInput"
+                      placeholder="name@example.com"
+                      data-bs-toggle="tooltip"
+                      data-bs-html="true"
+                      data-bs-placement="right"
+                      data-bs-custom-class="custom-tooltip"
+                      data-bs-title="                    
+                      <ul>
+                        <li>Minimum 8 characters in length</li>
+                        <li>At least one uppercase English letter</li>
+                        <li>At least one lowercase English letter</li>
+                        <li>At least one digit</li>
+                        <li>At least one special character</li>
+                      </ul>"
+                    />
+                    <label for="passwordInput">New Password</label>
+                  </div>
+                  <div class="form-floating mt-3">
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="confirmPasswordInput"
                       placeholder="name@example.com"
                     />
-                    <label for="emailInput">Email address</label>
+                    <label for="passwordInput">Confirm Password</label>
                   </div>
                   <div class="mt-2 mb-3">
                     <p id="form-notif" class="text-light">-</p>

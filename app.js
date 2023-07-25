@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 
 // Import libraries, models and routes
@@ -7,7 +8,6 @@ const stripe = require("stripe")(process.env.STRIPE_KEY);
 const stripeSessionModel = require("./models/stripeSession");
 const productModel = require("./models/product");
 const orderModel = require("./models/order");
-
 const verifyToken = require("./auth/verifyToken");
 const verifyCustomerToken = require("./auth/verifyCustomerToken");
 
