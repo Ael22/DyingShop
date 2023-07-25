@@ -19,11 +19,17 @@ fetch("/api/verifyCustomer", {
     }
 
     const script = document.createElement("script");
-    if (window.location.pathname === "/product/") {
+    if (
+      window.location.pathname === "/product/" ||
+      window.location.pathname === "/login/" ||
+      window.location.pathname === "/signup/" ||
+      window.location.pathname === "/reset/"
+    ) {
       script.src = "../scripts/cart.js";
     } else if (
       window.location.pathname === "/user/settings/" ||
-      window.location.pathname === "/user/orders/"
+      window.location.pathname === "/user/orders/" ||
+      window.location.pathname === "/reset/token/"
     ) {
       script.src = "../../scripts/cart.js";
     } else {

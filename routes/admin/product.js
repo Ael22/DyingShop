@@ -226,7 +226,6 @@ router.delete("/product", (req, res) => {
     });
 });
 
-// TODO: A lot of validation...
 router.put("/product/:id/upload", parser.single("file"), (req, res) => {
   try {
     const { id } = req.params;

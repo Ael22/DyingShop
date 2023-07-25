@@ -24,13 +24,59 @@ function redirectCounter() {
   }
 }
 
+function fetchVerifyEmail() {
+  document.getElementById("verifyEmailBtn").disabled = true;
+  document.getElementById(
+    "verifyEmailBtn"
+  ).innerHTML = `<i class="fa-solid fa-spinner fa-spin fa-lg" style="color: #ffffff;"></i>`;
+  fetch("/api/user/verifyemail", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success_msg) {
+        document.getElementById("verifyBtnInfo").textContent = data.success_msg;
+      } else if (data.err_msg === "User is already verified") {
+        window.location.reload();
+      } else {
+        document.getElementById(
+          "verifyBtnInfo"
+        ).textContent = `Failed to send verification email`;
+      }
+      document.getElementById("verifyEmailBtn").innerHTML = "Verify Email";
+      document.getElementById("verifyEmailBtn").disabled = false;
+    });
+}
+
 fetch("/api/user", {
   method: "GET",
   credentials: "include",
 })
   .then((response) => response.json())
   .then((data) => {
-    const { email, first_name, last_name, created_at } = data.user;
+    const { email, first_name, last_name, created_at, verified } = data.user;
+    if (!verified) {
+      document.getElementById(
+        "profileHeader"
+      ).innerHTML += ` <span class="badge text-bg-danger ms-2">Unverified</span>`;
+      document.getElementById(
+        "verifyInfo"
+      ).innerHTML = `Click on the link to verify your E-mail. <button type="button" id="verifyEmailBtn" class="btn btn-success ms-2">Verify Email</button>`;
+      document
+        .getElementById("verifyEmailBtn")
+        .addEventListener("click", () => {
+          fetchVerifyEmail();
+        });
+    } else {
+      document.getElementById(
+        "profileHeader"
+      ).innerHTML += ` <span class="badge text-bg-success ms-2">Verified</span>`;
+      document.getElementById("verifyInfo").innerHTML = "";
+    }
     document.getElementById("emailInput").value = email;
     document.getElementById("firstNameInput").value = first_name;
     document.getElementById("lastNameInput").value = last_name;

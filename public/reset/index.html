@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Admin Login Page</title>
+    <title>Customer Sign up Page</title>
     <script src="./index.js" type="text/javascript" defer></script>
-
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -23,19 +22,22 @@
       text-align: left;
     }
   </style>
-  <!-- Customer Login Page -->
+  <!-- Customer signup Page -->
   <body>
     <header>
       <navbar-component></navbar-component>
     </header>
-    <div class="d-flex justify-content-center align-items-center vh-100">
+    <div
+      class="d-flex justify-content-center align-items-center"
+      style="height: 90vh"
+    >
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-md-6">
             <div class="card">
               <div class="card-body">
-                <h2 class="card-title text-center">Sign in</h2>
-                <form id="signupForm" class="mt-4">
+                <h2 class="card-title text-center">Reset Password</h2>
+                <form id="resetForm" class="mt-4">
                   <div class="form-floating mb-3">
                     <input
                       type="email"
@@ -45,28 +47,12 @@
                     />
                     <label for="emailInput">Email address</label>
                   </div>
-                  <div class="form-floating">
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="passwordInput"
-                      placeholder="name@example.com"
-                    />
-                    <label for="passwordInput">Password</label>
-                  </div>
-                  <div class="mt-2 ms-2 mb-3">
-                    <a href="/reset">forgot password?</a>
-                  </div>
-                  <div class="mt-2 ms-2 mb-3">
+                  <div class="mt-2 mb-3">
                     <p id="form-notif" class="text-light">-</p>
                   </div>
                   <div class="d-grid">
-                    <button
-                      id="signInBtn"
-                      type="submit"
-                      class="btn btn-primary"
-                    >
-                      Sign in
+                    <button id="resetBtn" type="submit" class="btn btn-primary">
+                      Reset Password
                     </button>
                   </div>
                 </form>

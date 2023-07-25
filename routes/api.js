@@ -1,6 +1,10 @@
+/* eslint-disable no-unused-vars */
 // Import libraries, router, models and routes
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const nodemailerSendgrid = require("nodemailer-sendgrid");
+const UAParser = require("ua-parser-js");
 
 const router = express.Router();
 
@@ -16,6 +20,23 @@ const customerAdminRoutes = require("./admin/customer");
 const orderAdminRoutes = require("./admin/order");
 const customerRoutes = require("./customer");
 const statisticRoutes = require("./admin/statistics");
+
+// nodemailer transport
+const transport = nodemailer.createTransport(
+  // * FOR PRODUCTION
+  // nodemailerSendgrid({
+  //   apiKey: process.env.SENDGRID_API_KEY,
+  // }),
+  {
+    // ! USE MAILTRAP FOR TESTING
+    host: "sandbox.smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: process.env.MAILTRAP_USER,
+      pass: process.env.MAILTRAP_PASSWORD,
+    },
+  }
+);
 
 // regex
 const emailRegex = /^\S+@\S+\.\S+$/;
@@ -230,6 +251,204 @@ router.post("/verifyCustomer", (req, res) => {
       // token does not contain admin authentication so its a customer
       res.status(200).json({ success_msg: "User verified!" });
     }
+  });
+});
+
+router.get("/verifyemail/:token", (req, res) => {
+  try {
+    const { token } = req.params;
+    console.log(token);
+    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+      if (err) {
+        console.log(err);
+        if (err.name === "TokenExpiredError") {
+          res.status(400).send("Token expired");
+        } else if (
+          err.name === "JsonWebTokenError" ||
+          err.name === "NotBeforeError"
+        ) {
+          res.status(400).send("Invalid token.");
+        } else {
+          res.status(400).send("Error verifying token:", err.message);
+        }
+      } else {
+        console.log(`Verify token decoded for user with id ${decodedToken.id}`);
+        customerModel.verifyEmail(token, decodedToken.id).then((result) => {
+          if (!result) {
+            res.status(400).send("Token not found");
+            return;
+          }
+          res.status(200).send("user verified!");
+        });
+      }
+    });
+  } catch (error) {
+    console.log(err);
+    res.status(500).send("Internal server error");
+  }
+});
+
+router.post("/verifyResetToken", (req, res) => {
+  const { token } = req.body;
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      res.sendStatus(403);
+      return;
+    }
+    res.sendStatus(200);
+  });
+});
+
+router.post("/resetpassword/request", async (req, res) => {
+  const { email } = req.body;
+  if (!emailRegex.test(email)) {
+    res.status(400).json({ err_msg: "Invalid Email" });
+    return;
+  }
+
+  customerModel
+    .getCustomerByEmail(email)
+    .then((customerResult) => {
+      if (customerResult) {
+        customerModel
+          .updateResetToken(customerResult.email, customerResult.id)
+          .then((updateResult) => {
+            if (!updateResult) {
+              res
+                .status(500)
+                .json({ err_msg: "Failed to create reset email token" });
+              return;
+            }
+
+            const token = updateResult;
+
+            // Email template from mailmeteor => https://mailmeteor.com/email-templates/email-address-verification#viewsource
+            // modified for project use
+            const mailOptions = {
+              from: `${process.env.EMAIL_SENDER}`,
+              to: `${customerResult.email}`,
+              subject: "Reset Dying Shop Account Password",
+              text: `i forgor link`,
+              html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Please activate your account</title>
+  <!--[if mso]><style type="text/css">body, table, td, a { font-family: Arial, Helvetica, sans-serif !important; }</style><![endif]-->
+  </head>
+
+  <body style="font-family: Helvetica, Arial, sans-serif; margin: 0px; padding: 0px; background-color: #ffffff;">
+  <table role="presentation"
+    style="width: 100%; border-collapse: collapse; border: 0px; border-spacing: 0px; font-family: Arial, Helvetica, sans-serif; background-color: rgb(239, 239, 239);">
+    <tbody>
+      <tr>
+        <td align="center" style="padding: 1rem 2rem; vertical-align: top; width: 100%;">
+          <table role="presentation" style="max-width: 600px; border-collapse: collapse; border: 0px; border-spacing: 0px; text-align: left;">
+            <tbody>
+              <tr>
+                <td style="padding: 40px 0px 0px;">
+                  <div style="text-align: left;">
+                    <h1>Dying Shop</h1>
+                  </div>
+                  <div style="padding: 20px; background-color: rgb(255, 255, 255);">
+                    <div style="color: rgb(0, 0, 0); text-align: left;">
+                      <h1 style="margin: 1rem 0">Reset Password</h1>
+                      <p style="padding-bottom: 16px">Follow this link to reset your password.</p>
+                      <p style="padding-bottom: 16px"><a href="${process.env.DOMAIN}/reset/token?tokenId=${token}" target="_blank"
+                          style="padding: 12px 24px; border-radius: 4px; color: #FFF; background: #2B52F5;display: inline-block;margin: 0.5rem 0;">Reset Password</a>
+                      </p>
+                      <p style="padding-bottom: 16px">If you didn’t ask to reset password, you can ignore this email.</p>
+                      <p style="padding-bottom: 16px">Thanks,<br>The Dying Shop</p>
+                    </div>
+                  </div>
+                  <div style="padding-top: 20px; color: rgb(153, 153, 153); text-align: center;">
+                    <p style="padding-bottom: 16px">Made with ♥ in Paris</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  </body>
+
+  </html>`,
+            };
+
+            transport
+              .sendMail(mailOptions)
+              .then(() => {
+                console.log(`Reset Password Email sent to ${email}`);
+                res.status(200).json({
+                  success_msg: `If a matching & verified account was found an email was sent to ${email} to allow you to reset your password.`,
+                });
+              })
+              .catch((transportError) => {
+                throw transportError;
+              });
+          })
+          .catch((updateError) => {
+            throw updateError;
+          });
+      } else {
+        // set time out so emails that are not verified won't be known as they non-verified users emails will
+        // make the code send a response immediately
+        setTimeout(() => {
+          res.status(200).json({
+            success_msg: `If a matching & verified account was found an email was sent to ${email} to allow you to reset your password.`,
+          });
+        }, Math.random() * (6800 - 4800 + 1) + 4800);
+      }
+    })
+    .catch((emailError) => {
+      console.error(emailError);
+      res.status(200).json({
+        success_msg: `If a matching & verified account was found an email was sent to ${email} to allow you to reset your password.`,
+      });
+    });
+});
+
+router.post("/resetpassword", (req, res) => {
+  const { token } = req.body;
+  const newPassword = req.body.new_password;
+  const confirmPassword = req.body.confirm_password;
+
+  if (newPassword !== confirmPassword) {
+    res.status(400).json({ err_msg: "Passwords does not match" });
+    return;
+  }
+  if (!passwordRegex.test(newPassword)) {
+    res.status(400).json({ err_msg: "Invalid New Password" });
+    return;
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      res.status(400).json({ err_msg: "Token cannot be verified" });
+      return;
+    }
+    customerModel
+      .changePassword(newPassword, token, decoded.id)
+      .then((result) => {
+        if (!result) {
+          res
+            .status(500)
+            .json({ err_msg: "Error occured while changing password" });
+          return;
+        }
+        res.status(200).json({ success_msg: "Password has been changed" });
+      })
+      .catch((error) => {
+        console.error(error);
+        res
+          .status(500)
+          .json({ err_msg: "Error occured while changing password" });
+      });
   });
 });
 
