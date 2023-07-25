@@ -1,3 +1,9 @@
+fetch("/api/verifyAdmin").then((response) => {
+  if (response.ok) {
+    window.location.href = "/admin/dashboard";
+  }
+});
+
 const loginNotif = document.getElementById("login-notif");
 
 document

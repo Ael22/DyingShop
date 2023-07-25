@@ -452,4 +452,42 @@ router.post("/resetpassword", (req, res) => {
   });
 });
 
+router.get("/verifyAdmin", (req, res) => {
+  if (!req.headers.cookie) {
+    // cookie does not exist so send user a 403 response
+    res.status(403).json({ err_msg: "Cookie does not exist!" });
+    return;
+  }
+
+  // Retrieve JWT token from cookies
+  const token = req.headers.cookie.replace("token=", "");
+
+  // Checks if JWT token exists
+  if (!token) {
+    // JWT Token does not exist so send user a 403 response
+    res.status(403).json({ err_msg: "Token does not exist!" });
+    return;
+  }
+
+  // JWT token exists, so verify it
+  // eslint-disable-next-line consistent-return
+  jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
+    // if theres an error verifying the token
+    if (err) {
+      // log the error and redirect user
+      console.log(err);
+      res.status(403).json({ err_msg: "Forbidden" });
+      return;
+    }
+    // check if the decoded token contains admin authentication
+    if (!decoded.adminAuth) {
+      // token does not contain admin authentication so send a 401 response
+      console.log("user not admin");
+      res.status(403).json({ err_msg: "Forbidden" });
+      return;
+    }
+    res.sendStatus(200);
+  });
+});
+
 module.exports = router;
