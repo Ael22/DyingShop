@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const stripe = require("stripe")(process.env.STRIPE_KEY);
