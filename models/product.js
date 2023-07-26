@@ -23,6 +23,24 @@ const product = {
     }
   },
 
+  async getProductByCategoryId(id) {
+    try {
+      // sends a query to the database
+      const result = await pool.query(
+        `SELECT * FROM products WHERE category_id = ?`,
+        [id]
+      );
+      console.log("Query executed ");
+      // returns the results from the query
+      return result[0];
+    } catch (err) {
+      // An error got caught, log it
+      console.error("Error executing the SQL Statement: ", err);
+      // Throw error to be caught
+      throw err;
+    }
+  },
+
   async getMostSoldProduct() {
     try {
       const result = await pool.query(

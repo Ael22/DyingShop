@@ -9,10 +9,15 @@ async function loadCategoryDropdown(data) {
       "Categories cannot be loaded";
     return;
   }
-  let categoryHTML = "";
+  let categoryHTML = `        
+  <a href="/">
+  <li class="list-group-item">
+    All Products
+  </li>
+</a>`;
   categories.forEach((category) => {
     categoryHTML += `
-        <a href="#">
+        <a href="?categoryId=${category.id}">
           <li class="list-group-item">
             ${category.name}
           </li>
@@ -30,7 +35,12 @@ async function loadProducts(data) {
   const { products } = data;
   if (!products) {
     document.getElementById("productListing").innerHTML =
-      "Products cannot be loaded";
+      "<p>Products cannot be loaded</p>";
+    return;
+  }
+  if (products.length < 1) {
+    document.getElementById("productListing").innerHTML =
+      "<p>There are no products here</p>";
     return;
   }
   let productHTML = "";
@@ -71,9 +81,13 @@ async function loadProducts(data) {
  */
 async function renderSite() {
   try {
+    const params = new URLSearchParams(window.location.search);
+    const categoryId = params.get("categoryId");
     const data = await Promise.all([
       fetch("/api/category").then((response) => response.json()),
-      fetch("/api/product").then((response) => response.json()),
+      fetch(`/api/product?categoryId=${categoryId}`).then((response) =>
+        response.json()
+      ),
     ]);
     Promise.all([loadCategoryDropdown(data[0]), loadProducts(data[1])]);
   } catch (err) {
