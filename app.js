@@ -113,6 +113,7 @@ app.post(
           break;
         }
         // Handle event where a checkout session status becomes expired
+        case "checkout.session.async_payment_failed":
         case "checkout.session.expired": {
           const checkoutSessionExpired = event.data.object;
 
