@@ -112,19 +112,35 @@ router.get("/category/:id", (req, res) => {
 });
 
 router.get("/product", (req, res) => {
-  // Get all products and send the result
-  productModel
-    .getAllProducts()
-    .then((result) => {
-      res.status(200).json({ products: result });
-    })
-    .catch((err) => {
-      // An error got caught, log it
-      console.error("Error :", err);
+  const { categoryId } = req.query;
+  if (categoryId === "null") {
+    // Get all products and send the result
+    productModel
+      .getAllProducts()
+      .then((result) => {
+        res.status(200).json({ products: result });
+      })
+      .catch((err) => {
+        // An error got caught, log it
+        console.error("Error :", err);
 
-      // Send a 500 response
-      res.status(500).json({ err_msg: "Internal server error" });
-    });
+        // Send a 500 response
+        res.status(500).json({ err_msg: "Internal server error" });
+      });
+  } else {
+    productModel
+      .getProductByCategoryId(categoryId)
+      .then((result) => {
+        res.status(200).json({ products: result });
+      })
+      .catch((err) => {
+        // An error got caught, log it
+        console.error("Error :", err);
+
+        // Send a 500 response
+        res.status(500).json({ err_msg: "Internal server error" });
+      });
+  }
 });
 
 router.get("/product/:id", (req, res) => {
