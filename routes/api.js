@@ -24,18 +24,18 @@ const statisticRoutes = require("./admin/statistics");
 // nodemailer transport
 const transport = nodemailer.createTransport(
   // * FOR PRODUCTION
-  // nodemailerSendgrid({
-  //   apiKey: process.env.SENDGRID_API_KEY,
-  // }),
-  {
-    // ! USE MAILTRAP FOR TESTING
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
-    auth: {
-      user: process.env.MAILTRAP_USER,
-      pass: process.env.MAILTRAP_PASSWORD,
-    },
-  }
+  nodemailerSendgrid({
+    apiKey: process.env.SENDGRID_API_KEY,
+  })
+  // {
+  //   // ! USE MAILTRAP FOR TESTING
+  //   host: "sandbox.smtp.mailtrap.io",
+  //   port: 2525,
+  //   auth: {
+  //     user: process.env.MAILTRAP_USER,
+  //     pass: process.env.MAILTRAP_PASSWORD,
+  //   },
+  // }
 );
 
 // regex
