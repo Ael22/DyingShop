@@ -39,6 +39,7 @@ document
 
     const email = document.getElementById("emailInput").value;
     const password = document.getElementById("passwordInput").value;
+    document.getElementById("signInBtn").disabled = true;
 
     document.getElementById(
       "signInBtn"
@@ -55,10 +56,10 @@ document
       .then((data) => {
         document.getElementById("signInBtn").innerHTML = "Sign in";
         if (data.err_msg) {
+          document.getElementById("signInBtn").disabled = false;
           throw data.err_msg;
         } else if (data.token) {
           formNotif.className = "text-success ";
-          document.getElementById("signInBtn").disabled = true;
           redirectCounter();
         }
       })
