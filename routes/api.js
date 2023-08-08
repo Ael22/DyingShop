@@ -398,8 +398,8 @@ router.post("/resetpassword/request", async (req, res) => {
 
             transport
               .sendMail(mailOptions)
-              .then(() => {
-                console.log(`Reset Password Email sent to ${email}`);
+              .then((info) => {
+                console.log("Email sent: ", info.statusCode);
                 res.status(200).json({
                   success_msg: `If a matching & verified account was found an email was sent to ${email} to allow you to reset your password.`,
                 });
