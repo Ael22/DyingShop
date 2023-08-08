@@ -318,7 +318,7 @@ router.post("/verifyemail", (req, res) => {
                 transport
                   .sendMail(mailOptions)
                   .then((info) => {
-                    console.log("Email sent: ", info.statusCode);
+                    console.log("Email sent: ", info[0].statusCode);
                     res.status(200).json({
                       success_msg:
                         "An email has been sent. Link is valid for 24 hours.",
