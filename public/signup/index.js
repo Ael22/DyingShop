@@ -49,6 +49,10 @@ document
     const password = document.getElementById("passwordInput").value;
     const firstName = document.getElementById("firstNameInput").value;
     const lastName = document.getElementById("lastNameInput").value;
+    document.getElementById(
+      "signupBtn"
+    ).innerHTML = `<i class="fa-solid fa-spinner fa-spin fa-lg" style="color: #ffffff;"></i>`;
+    document.getElementById("signupBtn").disabled = true;
 
     fetch("/api/signup", {
       method: "POST",
@@ -59,7 +63,9 @@ document
     })
       .then((response) => response.json())
       .then((data) => {
+        document.getElementById("signupBtn").innerHTML = "Sign up";
         if (data.err_msg) {
+          document.getElementById("signupBtn").disabled = false;
           throw data.err_msg;
         } else if (data.success_msg) {
           formNotif.className = "text-success";
