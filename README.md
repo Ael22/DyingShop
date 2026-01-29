@@ -1,7 +1,7 @@
 # Dying Shop
+<!-- maybe Rename project 😭😭😭 -->
 
 Dying Shop is a full-stack e-commerce web application that I built for my ADES module that required me to integrate multiple third-party integrations. It features a complete customer-facing storefront for browsing products, managing a shopping cart, and making purchases, alongside a comprehensive admin dashboard for managing products, categories, customers, and orders. This was meant to be a group project but due to certain reasons, I was tasked with the project myself.
-
 
 ### Disclaimer 
 **Note:** This project was created for educational purposes only. It is not intended for production use.
