@@ -113,7 +113,7 @@ router.get("/category/:id", (req, res) => {
 
 router.get("/product", (req, res) => {
   const { categoryId } = req.query;
-  if ( !categoryId) {
+  if (!categoryId || categoryId === 'null') {
     // Get all products and send the result
     productModel
       .getAllProducts()
