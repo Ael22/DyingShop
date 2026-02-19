@@ -57,7 +57,7 @@ async function loadProducts(data) {
             <div class="col-4 mt-3">
             <a class="default-cursor" href="/product?id=${product.id}">
               <div class="card clickable" style="width: 20rem">
-                <img src="${product.image_url}" class="card-img-top" alt="..." />
+                <img src="${product.image_url}" class="card-img-top" alt="..." style="width: 100%; height: 200px; object-fit: cover;" />
                 <div class="card-body">
                   <p class="card-title">${product.name}</p>
                   <h5 class="card-text">
